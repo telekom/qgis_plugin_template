@@ -4,10 +4,10 @@ SPDX-FileCopyrightText: 2023 Deutsche Telekom AG
 SPDX-License-Identifier: CC0-1.0    
 -->
 
-# my-sample-project
+# QGIS Plugin Template
 
-[![REUSE Compliance Check](https://github.com/telekom/reuse-template/actions/workflows/reuse-compliance.yml/badge.svg)](https://github.com/telekom/reuse-template/actions/workflows/reuse-compliance.yml)
 [![OpenSSF Scorecard Score](https://api.scorecard.dev/projects/github.com/telekom/qgis_plugin_template/badge)](https://scorecard.dev/viewer/?uri=github.com/telekom/qgis_plugin_template/badge)
+[![REUSE Compliance Check](https://github.com/telekom/qgis_plugin_template/actions/workflows/reuse-compliance.yml/badge.svg)](https://github.com/telekom/qgis_plugin_template/actions/workflows/reuse-compliance.yml)
 
 ## About
 
