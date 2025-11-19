@@ -6,6 +6,7 @@ SPDX-License-Identifier: CC0-1.0
 
 # QGIS Plugin Template
 
+[![OpenSSF Scorecard Score](https://api.scorecard.dev/projects/github.com/telekom/qgis_plugin_template/badge)](https://scorecard.dev/viewer/?uri=github.com/telekom/qgis_plugin_template/badge)
 [![REUSE Compliance Check](https://github.com/telekom/qgis_plugin_template/actions/workflows/reuse-compliance.yml/badge.svg)](https://github.com/telekom/qgis_plugin_template/actions/workflows/reuse-compliance.yml)
 
 ## About
