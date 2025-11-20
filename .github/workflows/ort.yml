@@ -1,0 +1,32 @@
+name: ORT Scan
+
+on:
+  push:
+    branches: [ main ]
+  
+  pull_request:
+    branches: [ main ]
+
+  schedule:
+    # Weekly on Saturdays.
+    - cron:  '30 8 * * 6'
+
+
+jobs:
+  ort:
+    runs-on: ubuntu-22.04
+
+    permissions:
+        contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          submodules: 'recursive'
+
+      - name: Run ORT GitHub Action on repository
+        uses: oss-review-toolkit/ort-ci-github-action@1805edcf1f4f55f35ae6e4d2d9795ccfb29b6021 # v1.1.0
+        with:
+          ort-config-repository: 'https://github.com/telekom/ort-config.git'
+          log-level: info
