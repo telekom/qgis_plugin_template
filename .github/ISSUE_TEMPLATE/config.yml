@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: Deutsche Telekom AG
+#
+# SPDX-License-Identifier: CC0-1.0
+
+blank_issues_enabled: false
+
+contact_links:
+  - name: GitHub Discussions
+    url: https://github.com/telekom/qgis_plugin_template/discussions
+    about: Contribute to our discussions on GitHub, e.g. by asking questions and answering already open ones.
+    
+  - name: Stack Overflow
+    url: https://stackoverflow.com/questions/tagged/qgis_plugin_template
+    about: Ask and answer usage questions on Stack Overflow.
