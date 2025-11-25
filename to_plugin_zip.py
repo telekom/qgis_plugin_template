@@ -21,7 +21,7 @@ def build(zip_file_name, repo_location, destination_zip_file, *, ignore_paths: O
         ".idea", ".editorconfig", ".gitignore", ".gitignore", ".git", ".vscode",
         ".mypy_cache", ".gitlab-ci.yml", ".gitlab",
         "_cicd", "README.md",
-        "docs",
+        "docs", "tests",
 
         # submodules/base (plugin_base)
         "submodules/base/.git", "submodules/base/.gitignore", "submodules/base/.editorconfig",
