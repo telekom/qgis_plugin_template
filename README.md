@@ -1,7 +1,7 @@
 <!--
-SPDX-FileCopyrightText: 2023 Deutsche Telekom AG
+SPDX-FileCopyrightText: 2025 Deutsche Telekom AG
 
-SPDX-License-Identifier: CC0-1.0    
+SPDX-License-Identifier: CC0-1.0
 -->
 
 # QGIS Plugin Template
@@ -122,7 +122,7 @@ This project has adopted the [Contributor Covenant](https://www.contributor-cove
 By participating in this project, you agree to abide by its [Code of Conduct](./CODE_OF_CONDUCT.md) at all times.
 
 ## Licensing
-Copyright (c) XXXX Deutsche Telekom AG
+Copyright (c) 2025 Deutsche Telekom AG
 
 All content in this repository is licensed under at least one of the licenses found in [./LICENSES](./LICENSES); you may not use this file, or any other file in this repository, except in compliance with the Licenses. 
 You may obtain a copy of the Licenses by reviewing the files found in the [./LICENSES](./LICENSES) folder.
