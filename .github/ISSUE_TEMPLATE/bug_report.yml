@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: Deutsche Telekom AG
+#
+# SPDX-License-Identifier: CC0-1.0
+
 name: 'Bug report'
 description: |
   Submit a bug report about QGIS Plugin Template. Include a reproducible example and 
