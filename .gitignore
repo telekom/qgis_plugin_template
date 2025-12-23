@@ -1,3 +1,23 @@
-# SPDX-FileCopyrightText: 2023 Deutsche Telekom AG
-#
-# SPDX-License-Identifier: CC0-1.0
+# VS Code
+.vscode/
+
+# Other IDE
+.idea/
+
+# Python
+__pycache__/
+*.pyc
+
+# No GeoPackages
+*.gpkg*
+*.bak
+
+# Tests
+*_generated_ui.py
+temp-plugin-test-*
+symbology-style.db
+
+# Others
+logging_level_debug.debug
+accessibility_mode.ini
+*.bat

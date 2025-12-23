@@ -1,0 +1,46 @@
+[general]
+# UTF-8 and CR LF important!
+
+# name: name in QGIS repository window
+name=QGIS Plugin Template
+
+# plugin icon in QGIS repository window
+icon=templates/icons/icon.svg
+
+# name_menu_bar: name in QGIS' top menu bar
+name_menu_bar=QGIS Plugin Template
+
+# qgisMinimumVersion: minimum compatible QGIS version number
+qgisMinimumVersion=3.34.6
+qgisMaximumVersion=3.40.99
+
+# some default plugin information
+description=Plugin Template to easily create new QGIS plugins
+version=1.0.0
+author=Deutsche Telekom Technik GmbH
+email=
+
+about=Plugin Template to easily create new QGIS plugins
+
+tags=Template, Template
+
+homepage=
+category=Plugins
+
+experimental=False
+deprecated=False
+
+# FOLLOWING SECTION IS RESERVED BY THIS PLUGIN STRUCTURE!
+
+# Necessary, when you want to use this 'Plugin Template' as a stand-alone installation via default QGIS Plugin Repositories
+# pluginXmlUrl: where to locate this Plugin in a separate plugins.xml to handle it by QGIS
+pluginXmlUrl=
+# zipFilename: zip file name of this plugin defined in plugins.xml to search for it inside the xml DOM
+zipFilename=
+# emailBugs: internal email address to send errors or feedback to
+emailBugs=
+
+# Plugin Debugging / Problem solving / Developer functions
+# Force the dev mode to be always true.
+# If false, it will be read by profile settings.
+force_dev_mode=False

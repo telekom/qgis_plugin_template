@@ -1,6 +1,10 @@
+# SPDX-FileCopyrightText: Deutsche Telekom AG
+#
+# SPDX-License-Identifier: CC0-1.0
+
 name: 'Bug report'
 description: |
-  Submit a bug report about QGIS Template Plugin. Include a reproducible example and 
+  Submit a bug report about QGIS Plugin Template. Include a reproducible example and 
   detailed environment information. For security vulnerabilities, use the security advisory form instead.
 title: '[BUG] <brief description>'
 labels: ['bug', 'triage-needed']
@@ -20,6 +24,7 @@ body:
       label: Component
       description: Which component is affected?
       options:
+        - Source Code
         - Documentation
         - Other
     validations:
@@ -76,6 +81,7 @@ body:
       value: |
         - **Python Version**: [e.g., 1.24]
         - **OS/Platform**: [e.g., Ubuntu 22.04, macOS 14]
+        - **QGIS Version and Code revision**: [Copy from the QGIS desktop app (menu bar -> Help -> About -> Copy to Clipboard)]
       render: markdown
     validations:
       required: true

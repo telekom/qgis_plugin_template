@@ -1,0 +1,3 @@
+[submodule "submodules/base"]
+	path = submodules/base
+	url = https://github.com/telekom/qgis_plugin_base.git
