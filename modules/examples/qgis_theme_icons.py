@@ -127,6 +127,11 @@ class QgisDefaultThemeTable(QMainWindow, FORM_CLASS):
         self.Table_Icons.setColumnCount(self.c)
         self.Table_Icons.setRowCount(self.r)
         self.resize_cells()
+        # extra width is the size of everything around the table
+        extra_width = self.width() - self.Table_Icons.viewport().width()
+        # new width is the width around the table + the width of the table with all icons
+        new_width = extra_width + self.Table_Icons.horizontalHeader().length()
+        self.resize(new_width, self.height())
         self.setEnabled(True)
         QApplication.restoreOverrideCursor()
 
