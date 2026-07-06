@@ -58,7 +58,8 @@ class UIQuickCheck(UiModuleBase, QFrame, FORM_CLASS):
             return
 
         directory = self._last_directory or self.get_plugin().plugin_dir
-        file_path, _ = QFileDialog.getOpenFileName(self, None,
+        file_path, _ = QFileDialog.getOpenFileName(self,
+                                                   "Select Python file",
                                                    directory=directory,
                                                    filter="Python Files (*.py)")
         if not file_path or not Path(file_path).exists():
