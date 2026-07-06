@@ -22,6 +22,8 @@ from qgis.PyQt.QtCore import pyqtSignal
 
 from .test import run_pytest_from_ui
 
+from .modules.dev.hot_reload_frame import FramePicker
+
 from .submodules.base import constants
 from .submodules.base.versions_reader import VersionPlugin
 from .submodules.base.functions import qgis_unload_keyerror, get_files
@@ -186,6 +188,29 @@ class PluginTemplate(Plugin):
 
         self.versionRead.emit(self)
 
+    def load_frame_picker(self):
+        """ Load the developer frame picker into the existing plugin UI. """
+        if "FramePicker" not in self:
+            picker = self.add_module("FramePicker", FramePicker)
+        else:
+            picker = self["FramePicker"]
+
+        action = self.add_action(
+            f"Frame neu laden (Picker)",
+            self.getThemeIcon("cursors/mSelect.svg"),
+            None,  # connected manually below to receive the checked state
+            toolbar_name=self.plugin_menu_name,
+            toolbar_displayname=self.plugin_menu_name)
+        action.setCheckable(True)
+        action.setStatusTip("Einen Plan[Goo]-Frame anklicken, um dessen Modul vom "
+                            "Datenträger neu zu laden (ohne Plugin-Neustart und "
+                            "ohne erneutes Anmelden).\n"
+                            "Mausrad: Eltern-Frame · Esc/Rechtsklick: Abbrechen.")
+        action.setToolTip(action.statusTip())
+        picker.set_action(action)
+        action.triggered.connect(
+            lambda checked: picker.start() if checked else picker.cancel())
+
     def check_map_tool_changed(self, new_tool, old_tool):
         for drawing in self.drawings:
             if drawing:
@@ -310,6 +335,8 @@ class PluginTemplate(Plugin):
             # TestDockWidget, you can comment this out, when you don't need to test these classes
             from .modules.examples import dockwidget
             dockwidget.init(self)
+
+            self.load_frame_picker()
 
         # init gui from ui control
         from .utilities.ui_control import init_plugin_gui
