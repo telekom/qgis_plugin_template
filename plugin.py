@@ -202,9 +202,8 @@ class PluginTemplate(Plugin):
             toolbar_name=self.plugin_menu_name,
             toolbar_displayname=self.plugin_menu_name)
         action.setCheckable(True)
-        action.setStatusTip("Einen Plan[Goo]-Frame anklicken, um dessen Modul vom "
-                            "Datenträger neu zu laden (ohne Plugin-Neustart und "
-                            "ohne erneutes Anmelden).\n"
+        action.setStatusTip("Einen Frame anklicken, um dessen Modul "
+                            "neu zu laden (ohne Plugin-Neustart).\n"
                             "Mausrad: Eltern-Frame · Esc/Rechtsklick: Abbrechen.")
         action.setToolTip(action.statusTip())
         picker.set_action(action)

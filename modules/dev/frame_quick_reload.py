@@ -2,7 +2,7 @@
 # SPDX-FileCopyrightText: 2025 Deutsche Telekom Technik GmbH <f.vonstudsinske@telekom.de>
 # SPDX-License-Identifier: GPL-3.0-only
 
-""" Developer tool for picking a live Plan[Goo] frame and reloading its module. """
+""" Developer tool for picking a live frame and reloading its module. """
 
 import importlib
 import sys
@@ -133,9 +133,9 @@ class FrameReloader:
             :param module_class: The class of the module to instantiate.
             :param use_directly: Whether the module is used directly as a widget.
             :param widget_parent: The parent widget for the new module, if applicable.
-            
+
             :return: The newly created module instance.
-            
+
             :raises Exception: If the main widget cannot be created or is invalid.
         """
         parent.moduleAdding.emit(keyword, module_class)
@@ -177,7 +177,7 @@ class FrameReloader:
         """
         try:
             getattr(parent.get_plugin(), signal).emit(parent, module)
-        except (StopIteration, ModuleNotFoundError):
+        except (StopIteration, ModuleNotFoundError, AttributeError):
             ...
 
     def _emit_replacement_added(self, parent: ModuleBase, module: UiModuleBase):
@@ -317,7 +317,7 @@ class FrameReloader:
         """ Reload ``module`` and replace its live frame with a fresh instance.
 
             :param module: The module to reload.
-            
+
             :return: The newly created module instance that replaces the old one.
 
             :raises ValueError: If the module has no parent or no valid main widget.
@@ -393,7 +393,7 @@ class FrameReloader:
         """ Return the global rectangle of the module's main widget, if it exists and is visible.
 
             :param module: The module whose main widget's global rectangle is to be retrieved.
-            :return: The global rectangle of the main widget, or None if it doesn't exist or
+            :return: The global rectangle of the main widget, or None if it doesn't exist or is not visible.
         """
         widget = self._main_widget(module)
         if widget is None or not widget.isVisible():
@@ -455,7 +455,7 @@ class _HighlightOverlay(QWidget):
 
 
 class FramePicker(ModuleBase, QObject):
-    """Interactive picker that hot-reloads the clicked Plan[Goo] frame."""
+    """Interactive picker that hot-reloads the clicked frame."""
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -575,7 +575,7 @@ class FramePicker(ModuleBase, QObject):
         target, chain = self._resolve_target(QCursor.pos())
         if target is None:
             self._hide_overlay()
-            self._status("Kein Plan[Goo]-Frame unter dem Mauszeiger.")
+            self._status("Kein Plugin Frame unter dem Mauszeiger.")
             return
 
         rect = self._reloader.module_global_rect(target)

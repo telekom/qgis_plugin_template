@@ -175,8 +175,7 @@ class UIQuickCheck(UiModuleBase, QFrame, FORM_CLASS):
                 f"the plugin package."
             ) from e
 
-        # Build the full dotted module name, e.g.
-        #   plangoo_v2.modules.dev_tools.ui_quick_check
+        # Build the full dotted module name
         plugin_package = plugin_dir.name
         parts = list(rel_path.with_suffix("").parts)
         if parts and parts[-1] == "__init__":
@@ -191,7 +190,10 @@ class UIQuickCheck(UiModuleBase, QFrame, FORM_CLASS):
 
         # Import through the regular machinery so the module's __package__ is
         # set correctly and relative imports resolve.
-        module = importlib.import_module(full_module_name)
+        try:
+            module = importlib.import_module(full_module_name)
+        except Exception as e:
+            raise ClassNotFoundException(f"Failed to import {full_module_name} from {file_path}: {e}") from e
 
         classes = [
             obj
