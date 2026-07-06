@@ -22,8 +22,6 @@ from qgis.PyQt.QtCore import pyqtSignal
 
 from .test import run_pytest_from_ui
 
-from .modules.dev.frame_quick_reload import FramePicker
-
 from .submodules.base import constants
 from .submodules.base.versions_reader import VersionPlugin
 from .submodules.base.functions import qgis_unload_keyerror, get_files
@@ -190,6 +188,8 @@ class PluginTemplate(Plugin):
 
     def load_frame_picker(self):
         """ Load the developer frame picker into the existing plugin UI. """
+        from .modules.dev.frame_quick_reload import FramePicker
+
         if "FramePicker" not in self:
             picker = self.add_module("FramePicker", FramePicker)
         else:
@@ -207,7 +207,8 @@ class PluginTemplate(Plugin):
                             "Mausrad: Eltern-Frame · Esc/Rechtsklick: Abbrechen.")
         action.setToolTip(action.statusTip())
         picker.set_action(action)
-        action.triggered.connect(
+        self.connect(
+            action.triggered,
             lambda checked: picker.start() if checked else picker.cancel())
 
     def check_map_tool_changed(self, new_tool, old_tool):

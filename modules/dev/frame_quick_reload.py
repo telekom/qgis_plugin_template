@@ -107,128 +107,6 @@ class FrameReloader:
             ) from exc
 
     @staticmethod
-    def _layout_for(widget: QWidget) -> QLayout:
-        """ Return the layout of the parent container of the given widget.
-
-            :param widget: The widget whose parent layout is to be retrieved.
-            :return: The layout of the parent container.
-            :raises NotImplementedError: If the parent container has no layout.
-        """
-        container = widget.parent()
-        layout = container.layout() if container is not None else None
-        if layout is None:
-            raise NotImplementedError(
-                "Der Eltern-Container des Frames besitzt kein Layout und kann "
-                "nicht neu geladen werden.")
-        return layout
-
-    def _create_replacement_module(self, parent: ModuleBase, keyword: str,
-                                   module_class: Type[UiModuleBase],
-                                   use_directly: bool,
-                                   widget_parent: Optional[QWidget]) -> UiModuleBase:
-        """ Create a new instance of the module class and emit signals for its addition.
-
-            :param parent: The parent module to which the new module will be added.
-            :param keyword: The keyword/name of the module.
-            :param module_class: The class of the module to instantiate.
-            :param use_directly: Whether the module is used directly as a widget.
-            :param widget_parent: The parent widget for the new module, if applicable.
-
-            :return: The newly created module instance.
-
-            :raises Exception: If the main widget cannot be created or is invalid.
-        """
-        parent.moduleAdding.emit(keyword, module_class)
-        plugin = parent.get_plugin()
-        module = module_class(
-            parent=widget_parent if use_directly else None,
-            parent_module=parent,
-            name=keyword,
-            module_name=keyword,
-            plugin=plugin,
-            logging_file_path=plugin.log_file_path,
-            logging_level_debug=plugin.logging_level_debug,
-        )
-        parent.uiModuleAdding.emit(module)
-
-        try:
-            if use_directly:
-                module.make_valid()
-
-            widget = self._main_widget(module)
-            if widget is None:
-                raise AttributeError(
-                    f"missing MainWidget object name on "
-                    f"{module.__class__.__name__}/in ui file")
-            widget._ui_module_base = module
-        except Exception:
-            module.unload(self_unload=False)
-            raise
-
-        return module
-
-    @staticmethod
-    def _emit_plugin_signal(parent: ModuleBase, signal: str, module: UiModuleBase):
-        """ Emit a signal from the parent plugin, if it exists.
-
-            :param parent: The parent module whose plugin signal is to be emitted.
-            :param signal: The name of the signal to emit.
-            :param module: The module to pass as an argument to the signal.
-        """
-        try:
-            getattr(parent.get_plugin(), signal).emit(parent, module)
-        except (StopIteration, ModuleNotFoundError, AttributeError):
-            ...
-
-    def _emit_replacement_added(self, parent: ModuleBase, module: UiModuleBase):
-        """ Emit signals indicating that a new module has been added to the parent.
-
-            :param parent: The parent module to which the new module has been added.
-            :param module: The newly added module.
-        """
-        parent.moduleAdded.emit(module)
-        self._emit_plugin_signal(parent, "submoduleAdded", module)
-        parent.uiModuleAdded.emit(module)
-        self._emit_plugin_signal(parent, "uiSubmoduleAdded", module)
-
-    def _install_replacement_module(self, parent: ModuleBase, layout: QLayout,
-                                    current_widget: QWidget,
-                                    new_module: UiModuleBase):
-        """ Replace the current widget in the layout with the new module's main widget.
-
-            :param parent: The parent module containing the layout.
-            :param layout: The layout in which the current widget resides.
-            :param current_widget: The widget to be replaced.
-            :param new_module: The new module whose main widget will replace the current widget.
-
-            :raises RuntimeError: If the current widget is not found in the layout, or if the new module's main widget is invalid.
-        """
-        if layout.indexOf(current_widget) < 0:
-            raise RuntimeError("Frame-Widget wurde in seinem Layout nicht gefunden.")
-
-        object_name = current_widget.objectName()
-        parent.is_object_name_valid(object_name)
-
-        widget = self._main_widget(new_module)
-        if widget is None:
-            raise RuntimeError("Ersatzmodul besitzt kein gültiges 'MainWidget'.")
-
-        replaced_item = layout.replaceWidget(current_widget, widget)
-        if replaced_item is None:
-            raise RuntimeError("Frame-Widget konnte im Layout nicht ersetzt werden.")
-
-        widget.show()
-        current_widget.hide()
-        current_widget.setParent(None)
-
-        replaced_widget = replaced_item.widget()
-        if replaced_widget is not None:
-            layout.removeWidget(replaced_widget)
-
-        setattr(parent, object_name, widget)
-        widget.setObjectName(object_name)
-
-    @staticmethod
     def _add_layout_item(layout: QLayout, item,
                          grid_position: Optional[Tuple[int, int, int, int]]):
         """ Add a layout item (widget or layout) to the specified layout at the given grid position.
@@ -331,34 +209,40 @@ class FrameReloader:
         if main_widget is None:
             raise ValueError("Frame besitzt kein gültiges 'MainWidget'.")
 
-        keyword = module.module_name
         use_directly = main_widget is module
         if not main_widget.objectName():
             raise ValueError("Frame-Widget besitzt keinen objectName und kann "
                              "nicht eindeutig ersetzt werden.")
 
         fresh_class = self.reload_module_source(module.__class__)
-        layout = self._layout_for(main_widget)
-        new_module = self._create_replacement_module(
-            parent, keyword, fresh_class, use_directly, main_widget.parent())
 
-        if use_directly:
-            self._raise_for_direct_module_conflicts(module, new_module)
+        if not isinstance(parent, UiModuleBase):
+            raise ValueError("Frame besitzt kein UI-Eltern-Modul und kann nicht "
+                             "über die UI-Modulverwaltung neu geladen werden.")
 
-        try:
-            self._install_replacement_module(parent, layout, main_widget, new_module)
+        validate_module = (
+            lambda new_module: self._raise_for_direct_module_conflicts(module, new_module)
+            if use_directly else None
+        )
+
+        def finalize_module(new_module: UiModuleBase):
             if use_directly:
                 self._adopt_direct_module_contents(module, new_module)
-        except Exception:
-            new_module.unload(self_unload=False)
-            raise
 
-        module.unload(self_unload=True)
-        if not use_directly and self.is_alive(main_widget):
-            main_widget.deleteLater()
+            module.unload(self_unload=False)
+            if not use_directly and self.is_alive(main_widget):
+                main_widget.deleteLater()
 
-        parent._modules[keyword] = new_module
-        self._emit_replacement_added(parent, new_module)
+        new_module = parent.replace_ui_module(
+            module,
+            fresh_class,
+            use_directly=use_directly,
+            parent=main_widget.parent() if use_directly else None,
+            delete_replaced_widget=not use_directly,
+            delete_replaced_children=not use_directly,
+            validate_module=validate_module,
+            finalize_module=finalize_module)
+
         return new_module
 
     def resolve_module_chain(self, widget: Optional[QWidget]) -> List[UiModuleBase]:
