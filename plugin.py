@@ -22,7 +22,7 @@ from qgis.PyQt.QtCore import pyqtSignal
 
 from .test import run_pytest_from_ui
 
-from .modules.dev.hot_reload_frame import FramePicker
+from .modules.dev.frame_quick_reload import FramePicker
 
 from .submodules.base import constants
 from .submodules.base.versions_reader import VersionPlugin

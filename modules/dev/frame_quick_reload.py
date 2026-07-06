@@ -81,6 +81,7 @@ class FrameReloader:
 
             :param cls: The class to reload.
             :return: The reloaded class.
+            :raises AttributeError: If the class is not found in the reloaded module.
         """
         module_name = cls.__module__
         purge_prefix = self._reload_prefix(module_name)
@@ -111,6 +112,7 @@ class FrameReloader:
 
             :param widget: The widget whose parent layout is to be retrieved.
             :return: The layout of the parent container.
+            :raises NotImplementedError: If the parent container has no layout.
         """
         container = widget.parent()
         layout = container.layout() if container is not None else None
@@ -131,7 +133,10 @@ class FrameReloader:
             :param module_class: The class of the module to instantiate.
             :param use_directly: Whether the module is used directly as a widget.
             :param widget_parent: The parent widget for the new module, if applicable.
+            
             :return: The newly created module instance.
+            
+            :raises Exception: If the main widget cannot be created or is invalid.
         """
         parent.moduleAdding.emit(keyword, module_class)
         plugin = parent.get_plugin()
@@ -195,6 +200,8 @@ class FrameReloader:
             :param layout: The layout in which the current widget resides.
             :param current_widget: The widget to be replaced.
             :param new_module: The new module whose main widget will replace the current widget.
+
+            :raises RuntimeError: If the current widget is not found in the layout, or if the new module's main widget is invalid.
         """
         if layout.indexOf(current_widget) < 0:
             raise RuntimeError("Frame-Widget wurde in seinem Layout nicht gefunden.")
@@ -272,6 +279,8 @@ class FrameReloader:
 
             :param current_module: The current module being replaced.
             :param new_module: The new module being added.
+
+            :raises KeyError: If there are conflicting child module names.
         """
         conflicts = set(new_module._modules).intersection(current_module._modules)
         if conflicts:
@@ -308,7 +317,10 @@ class FrameReloader:
         """ Reload ``module`` and replace its live frame with a fresh instance.
 
             :param module: The module to reload.
+            
             :return: The newly created module instance that replaces the old one.
+
+            :raises ValueError: If the module has no parent or no valid main widget.
         """
         parent = module.get_parent()
         if parent is None:
