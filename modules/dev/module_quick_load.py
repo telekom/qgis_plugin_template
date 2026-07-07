@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# SPDX-FileCopyrightText: 2025 Deutsche Telekom Technik GmbH <f.vonstudsinske@telekom.de>
+# SPDX-FileCopyrightText: 2026 Deutsche Telekom IT GmbH <leonard.buhl@telekom.de>
 # SPDX-License-Identifier: GPL-3.0-only
 
 import sys
