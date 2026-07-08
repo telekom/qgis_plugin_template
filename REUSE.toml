@@ -1,6 +1,6 @@
 # SPDX-FileCopyrightText: 2024 Deutsche Telekom AG
 #
-# SPDX-License-Identifier: CC0-1.0    
+# SPDX-License-Identifier: CC0-1.0
 
 # See https://reuse.software/spec-3.2/#reusetoml for specification
 version = 1
@@ -14,7 +14,7 @@ SPDX-License-Identifier = "GPL-3.0-only"
 
 # All ui files from the modules/examples:
 [[annotations]]
-path = ["modules/examples/*.ui"]
+path = ["modules/examples/*.ui", "modules/dev/*.ui"]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2025 Deutsche Telekom Technik GmbH <f.vonstudsinske@telekom.de>"
 SPDX-License-Identifier = "GPL-3.0-only"
