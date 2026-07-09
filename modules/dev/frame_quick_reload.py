@@ -20,7 +20,7 @@ from ...submodules.base.ui.base_plugin import Plugin
 
 class CustomFrameReloadException(Exception):
     """ Exception raised for errors during frame reloading. """
-    ...
+    pass
 
 
 class FrameReloader:
@@ -100,7 +100,7 @@ class FrameReloader:
             fresh_module = importlib.import_module(module_name)
         except Exception as e:
             self._restore_modules(purge_prefix, purged_modules)
-            raise CustomFrameReloadException(f"Could not import fresh module") from e
+            raise CustomFrameReloadException(f"Modul '{module_name}' konnte nicht importiert werden.") from e
 
         try:
             return getattr(fresh_module, cls.__name__)
