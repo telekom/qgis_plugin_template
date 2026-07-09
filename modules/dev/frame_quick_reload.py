@@ -86,7 +86,7 @@ class FrameReloader:
 
             :param cls: The class to reload.
             :return: The reloaded class.
-            :raises CustomFrameReloadException: If the class is not found in the reloaded module.
+            :raises CustomFrameReloadException: If the module cannot be imported or the class is not found after reloading.
         """
         module_name = cls.__module__
         purge_prefix = self._reload_prefix(module_name)
@@ -108,7 +108,7 @@ class FrameReloader:
             self._restore_modules(purge_prefix, purged_modules)
             raise CustomFrameReloadException(
                 f"Klasse '{cls.__name__}' wurde nach dem Neuladen nicht in "
-                f"'{module_name}' gefunden. {traceback.format_exc}"
+                f"'{module_name}' gefunden. {traceback.format_exc()}"
             )
 
     @staticmethod
