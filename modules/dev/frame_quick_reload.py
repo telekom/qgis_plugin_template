@@ -98,18 +98,18 @@ class FrameReloader:
 
         try:
             fresh_module = importlib.import_module(module_name)
-        except Exception:
+        except Exception as e:
             self._restore_modules(purge_prefix, purged_modules)
-            raise CustomFrameReloadException(f"Could not import fresh module: {traceback.format_exc()}")
+            raise CustomFrameReloadException(f"Could not import fresh module") from e
 
         try:
             return getattr(fresh_module, cls.__name__)
-        except AttributeError:
+        except AttributeError as e:
             self._restore_modules(purge_prefix, purged_modules)
             raise CustomFrameReloadException(
                 f"Klasse '{cls.__name__}' wurde nach dem Neuladen nicht in "
-                f"'{module_name}' gefunden. {traceback.format_exc()}"
-            )
+                f"'{module_name}' gefunden."
+            ) from e
 
     @staticmethod
     def _add_layout_item(layout: QLayout, item,
