@@ -18,8 +18,13 @@ from ...submodules.base.ui.base_class import ModuleBase, UiModuleBase
 from ...submodules.base.ui.base_plugin import Plugin
 
 
+class CustomFrameReloadException(Exception):
+    """ Exception raised for errors during frame reloading. """
+    pass
+
+
 class FrameReloader:
-    """Reloads modules and resolves reloadable frames for the picker."""
+    """ Reloads modules and resolves reloadable frames for the picker. """
 
     @staticmethod
     def is_alive(obj) -> bool:
@@ -81,7 +86,7 @@ class FrameReloader:
 
             :param cls: The class to reload.
             :return: The reloaded class.
-            :raises AttributeError: If the class is not found in the reloaded module.
+            :raises CustomFrameReloadException: If the module cannot be imported or the class is not found after reloading.
         """
         module_name = cls.__module__
         purge_prefix = self._reload_prefix(module_name)
@@ -93,18 +98,18 @@ class FrameReloader:
 
         try:
             fresh_module = importlib.import_module(module_name)
-        except Exception:
+        except Exception as e:
             self._restore_modules(purge_prefix, purged_modules)
-            raise
+            raise CustomFrameReloadException(f"Modul '{module_name}' konnte nicht importiert werden.") from e
 
         try:
             return getattr(fresh_module, cls.__name__)
-        except AttributeError as exc:
+        except AttributeError as e:
             self._restore_modules(purge_prefix, purged_modules)
-            raise AttributeError(
+            raise CustomFrameReloadException(
                 f"Klasse '{cls.__name__}' wurde nach dem Neuladen nicht in "
                 f"'{module_name}' gefunden."
-            ) from exc
+            ) from e
 
     @staticmethod
     def _add_layout_item(layout: QLayout, item,
@@ -132,6 +137,11 @@ class FrameReloader:
             layout.addItem(item)
 
     def _move_layout_contents(self, source: QWidget, target: QWidget):
+        """ Move all layout items from the source widget's layout to the target widget's layout.
+
+            :param source: The source widget whose layout items will be moved.
+            :param target: The target widget to which the layout items will be moved.
+        """
         source_layout = source.layout()
         target_layout = target.layout()
         if source_layout is None or target_layout is None or source_layout is target_layout:
