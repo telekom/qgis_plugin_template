@@ -1,0 +1,10 @@
+line-length = 120
+
+[lint]
+preview = true
+select = ["E", "F", "W", "RUF", "PL", "FURB", "SIM", "PLW", "PLR"]
+fixable = ["W291", "W293"]
+ignore =["PLR0904"]
+
+[lint.per-file-ignores]
+"__init__.py" = ["F401"]

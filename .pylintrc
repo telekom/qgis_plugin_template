@@ -1,0 +1,11 @@
+# Pylint cannot infer members re-exported at runtime by SIP-generated QGIS/PyQt modules.
+[MAIN]
+ignored-modules =
+    qgis.core,
+    qgis.gui,
+    qgis.PyQt.QtCore,
+    qgis.PyQt.QtGui,
+    qgis.PyQt.QtWidgets
+
+[FORMAT]
+max-line-length = 120

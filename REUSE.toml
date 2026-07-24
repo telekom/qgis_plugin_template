@@ -7,7 +7,7 @@ version = 1
 
 # No special copyrights, e.g. screenshots or config files:
 [[annotations]]
-path = ["**/.gitignore", "pytest.ini", "metadata.txt", "modules/examples/qgis_default_icons.txt", ".gitmodules"]
+path = ["**/.gitignore", ".pylintrc", ".vscode/*.json", "pytest.ini", "requirements-dev.txt", "ruff.toml", "metadata.txt", "modules/examples/qgis_default_icons.txt", ".gitmodules"]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "NONE"
 SPDX-License-Identifier = "GPL-3.0-only"
