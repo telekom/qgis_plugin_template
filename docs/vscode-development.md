@@ -19,14 +19,19 @@ From Git Bash in the plugin root, run:
 bash scripts/setup-qgis-dev.sh
 ```
 
-The script finds the newest installation below `C:\Program Files\QGIS*`. To use
-a particular installation, pass it explicitly:
+Without an argument, the script uses `QGIS_ROOT` when it is set; otherwise, it
+finds the newest installation below `C:\Program Files\QGIS*`. To use a
+particular standalone or OSGeo4W installation, pass its root directory
+explicitly:
 
 ```bash
 bash scripts/setup-qgis-dev.sh 'C:\Program Files\QGIS 3.40.7'
 ```
 
-Then reload the VS Code window. The checked-in workspace settings select
+An explicit argument takes precedence over `QGIS_ROOT`. Run the script from Git
+Bash, not WSL, because it creates and invokes Windows executables.
+
+Then reload the VS Code window. The shared workspace settings select
 `.venv\Scripts\python.exe`. If VS Code has cached a previously selected
 interpreter, run **Python: Select Interpreter** once and choose that file.
 
@@ -40,8 +45,8 @@ are available even when the QGIS installation does not include them. The stub
 packages provide completion, type information, and navigation for the native
 QGIS and Qt APIs.
 
-The script may be rerun after a QGIS upgrade. It creates only machine-local,
-ignored files (`.venv` and `.env`). The VS Code settings and the setup script are
+The script may be rerun after a QGIS upgrade. Its generated files (`.venv` and
+`.env`) are machine-local and ignored. The VS Code settings and setup script are
 shared by the repository.
 
 ## Why the batch file is not selected as the interpreter
@@ -56,11 +61,11 @@ inherited by unrelated Python tools and can prevent linters or virtual
 environments from starting.
 
 The setup uses QGIS's real executable under `apps\Python3*\python.exe` to create
-a project-local virtual environment with QGIS's bundled packages. A `.pth` file
-adds `apps\qgis-ltr\python` (or `apps\qgis\python`). Importing `qgis` then loads
-QGIS's own environment file and registers its native DLL directories. This gives
-VS Code a normal interpreter without leaking the QGIS environment into VS Code
-itself.
+a project-local virtual environment that can access QGIS's bundled packages. A
+`.pth` file adds `apps\qgis-ltr\python` (or `apps\qgis\python`). On Windows, the
+`qgis` package then reads QGIS's own environment file and registers the native
+DLL directories when it is imported. This gives VS Code a normal interpreter
+without applying QGIS's process-wide environment to VS Code itself.
 
 A virtual environment made with a separately installed Python is not compatible
 with the native QGIS bindings unless its Python major/minor version and ABI match
@@ -76,20 +81,21 @@ QGIS exactly. The setup script avoids that mismatch.
 - Ruff runs as its own native language server, so linting and PEP 8 checks do not
   depend on launching QGIS Python.
 - Ruff is the default formatter with a line length of 120.
-- Pylint uses the same interpreter. The repository configuration suppresses
-  false `no-name-in-module` reports for members exported dynamically by QGIS's
-  SIP-generated modules.
+- If the Pylint extension is installed, its workspace configuration uses the
+  same interpreter and suppresses false `no-name-in-module` reports for members
+  exported dynamically by QGIS's SIP-generated modules.
 - ty is disabled for this workspace because it currently reports false import
   and member errors for the plugin package and QGIS compatibility modules.
 
 VS Code discovers pytest tests from the parent QGIS plugins directory so the
-hyphenated plugin folder keeps its package context and relative imports work.
-The FPF integration suite is excluded from default discovery because it requires
-private credentials and external test workspaces.
+plugin keeps its package context and relative imports work. The FPF integration
+suite is excluded from default discovery because it requires private credentials
+and external test workspaces.
 
 The generated `.env` records the selected QGIS installation and environment
 name and disables user-site packages so undeclared personal installations cannot
-hide missing dependencies. It deliberately does **not** define `PYTHONHOME`.
+hide missing dependencies. It does not set `PYTHONHOME`; the setup script also
+removes an inherited `PYTHONHOME` before invoking Python.
 
 ## Troubleshooting
 

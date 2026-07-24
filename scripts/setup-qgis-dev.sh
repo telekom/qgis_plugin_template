@@ -13,15 +13,25 @@ Examples:
     bash scripts/setup-qgis-dev.sh
     bash scripts/setup-qgis-dev.sh 'C:\Program Files\QGIS 3.40.7'
 
-If no directory is given, QGIS_ROOT is used. Otherwise the newest installation
-under C:\Program Files\QGIS* is selected.
+The argument takes precedence over QGIS_ROOT. If neither is set, the newest
+installation under C:\Program Files\QGIS* is selected.
 EOF
 }
+
+if [[ $# -gt 1 ]]; then
+    usage >&2
+    exit 2
+fi
 
 case "${1:-}" in
     -h|--help)
         usage
         exit 0
+        ;;
+    -*)
+        printf 'Unknown option: %s\n\n' "$1" >&2
+        usage >&2
+        exit 2
         ;;
 esac
 
@@ -112,7 +122,7 @@ if $recreate; then
         rm -rf "$venv_dir"
     fi
     printf 'Creating .venv with %s ...\n' "$python_dir/python.exe"
-    "$python_dir/python.exe" -m venv --system-site-packages "$venv_dir"
+    env -u PYTHONHOME "$python_dir/python.exe" -m venv --system-site-packages "$venv_dir"
 fi
 
 site_packages="$venv_dir/Lib/site-packages"
@@ -123,7 +133,7 @@ printf '%s\n' "$qgis_root_windows" > "$marker_file"
 # user's site-packages here so every checkout gets its own pinned pytest and
 # type stubs instead of accidentally relying on packages installed for one user.
 printf 'Installing development dependencies ...\n'
-PYTHONNOUSERSITE=1 "$venv_python" -m pip install \
+env -u PYTHONHOME PYTHONNOUSERSITE=1 "$venv_python" -m pip install \
     --disable-pip-version-check \
     --requirement "$workspace_dir/requirements-dev.txt"
 
@@ -136,7 +146,7 @@ PYTHONNOUSERSITE=1
 EOF
 
 printf 'Checking the environment ...\n'
-PYTHONNOUSERSITE=1 "$venv_python" -c 'import sys, pytest; from qgis.core import Qgis; print(f"Python {sys.version.split()[0]}, QGIS {Qgis.version()}, pytest {pytest.__version__}")'
+env -u PYTHONHOME PYTHONNOUSERSITE=1 "$venv_python" -c 'import sys, pytest; from qgis.core import Qgis; print(f"Python {sys.version.split()[0]}, QGIS {Qgis.version()}, pytest {pytest.__version__}")'
 
 cat <<'EOF'
 
