@@ -87,11 +87,15 @@ if [[ ${#python_candidates[@]} -eq 0 ]]; then
 fi
 python_dir="$(printf '%s\n' "${python_candidates[@]}" | sort -V | tail -n 1)"
 
-if [[ -d "$qgis_root/apps/qgis-ltr/python/qgis" ]]; then
-    qgis_app_dir="$qgis_root/apps/qgis-ltr"
-elif [[ -d "$qgis_root/apps/qgis/python/qgis" ]]; then
-    qgis_app_dir="$qgis_root/apps/qgis"
-else
+qgis_app_dir=""
+for qgis_env_name in qgis-ltr-dev qgis-dev qgis-ltr qgis; do
+    candidate="$qgis_root/apps/$qgis_env_name"
+    if [[ -d "$candidate/python/qgis" ]]; then
+        qgis_app_dir="$candidate"
+        break
+    fi
+done
+if [[ -z "$qgis_app_dir" ]]; then
     printf 'Could not find the QGIS Python package below %s\\apps.\n' "$qgis_root" >&2
     exit 1
 fi

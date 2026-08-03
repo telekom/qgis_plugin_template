@@ -32,7 +32,6 @@
         "${workspaceFolder}/pytest.ini",
         "-o",
         "consider_namespace_packages=true",
-        "--ignore=${workspaceFolder}/tests/test_fpf_stp_import.py",
         "${workspaceFolder}/tests"
     ],
     "python.testing.unittestEnabled": false,

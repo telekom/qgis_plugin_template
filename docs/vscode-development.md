@@ -88,9 +88,7 @@ QGIS exactly. The setup script avoids that mismatch.
   and member errors for the plugin package and QGIS compatibility modules.
 
 VS Code discovers pytest tests from the parent QGIS plugins directory so the
-plugin keeps its package context and relative imports work. The FPF integration
-suite is excluded from default discovery because it requires private credentials
-and external test workspaces.
+plugin keeps its package context and relative imports work.
 
 The generated `.env` records the selected QGIS installation and environment
 name and disables user-site packages so undeclared personal installations cannot
