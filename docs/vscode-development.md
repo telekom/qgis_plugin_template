@@ -31,6 +31,18 @@ bash scripts/setup-qgis-dev.sh 'C:\Program Files\QGIS 3.40.7'
 An explicit argument takes precedence over `QGIS_ROOT`. Run the script from Git
 Bash, not WSL, because it creates and invokes Windows executables.
 
+For an OSGeo4W installation, pass the OSGeo4W root rather than its QGIS app
+directory. For example, a debug build at `C:\OSGeo4W\apps\qgis-ltr-dev` is
+selected from this command:
+
+```bash
+bash scripts/setup-qgis-dev.sh 'C:\OSGeo4W'
+```
+
+When a root contains multiple QGIS environments, the script selects the first
+available environment in this order: `qgis-ltr-dev`, `qgis-dev`, `qgis-ltr`,
+then `qgis`.
+
 Then reload the VS Code window. The shared workspace settings select
 `.venv\Scripts\python.exe`. If VS Code has cached a previously selected
 interpreter, run **Python: Select Interpreter** once and choose that file.
@@ -62,10 +74,12 @@ environments from starting.
 
 The setup uses QGIS's real executable under `apps\Python3*\python.exe` to create
 a project-local virtual environment that can access QGIS's bundled packages. A
-`.pth` file adds `apps\qgis-ltr\python` (or `apps\qgis\python`). On Windows, the
-`qgis` package then reads QGIS's own environment file and registers the native
-DLL directories when it is imported. This gives VS Code a normal interpreter
-without applying QGIS's process-wide environment to VS Code itself.
+`.pth` file adds the selected environment's Python package directory, such as
+`apps\qgis-ltr-dev\python`, `apps\qgis-dev\python`, `apps\qgis-ltr\python`, or
+`apps\qgis\python`. On Windows, the `qgis` package then reads QGIS's own
+environment file and registers the native DLL directories when it is imported.
+This gives VS Code a normal interpreter without applying QGIS's process-wide
+environment to VS Code itself.
 
 A virtual environment made with a separately installed Python is not compatible
 with the native QGIS bindings unless its Python major/minor version and ABI match
