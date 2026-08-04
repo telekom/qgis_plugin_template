@@ -1,0 +1,39 @@
+{
+    "python.defaultInterpreterPath": "${workspaceFolder}/.venv/Scripts/python.exe",
+    "python.languageServer": "Pylance",
+    "python.envFile": "${workspaceFolder}/.env",
+    "python.terminal.activateEnvironment": true,
+    "python.terminal.useEnvFile": true,
+    "python.analysis.typeCheckingMode": "off",
+    "python.analysis.diagnosticMode": "openFilesOnly",
+    "python.analysis.autoImportCompletions": true,
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}/.."
+    ],
+    "pylint.interpreter": [
+        "${workspaceFolder}/.venv/Scripts/python.exe"
+    ],
+    "pylint.importStrategy": "useBundled",
+    "ruff.nativeServer": "on",
+    "ruff.configuration": "${workspaceFolder}/ruff.toml",
+    "files.trimTrailingWhitespace": false,
+    "[python]": {
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        "editor.formatOnSave": false,
+        "editor.codeActionsOnSave": {
+            "source.fixAll.ruff": "explicit",
+            "source.organizeImports.ruff": "never"
+        }
+    },
+    "python.testing.cwd": "${workspaceFolder}/..",
+    "python.testing.pytestArgs": [
+        "--rootdir=.",
+        "-c",
+        "${workspaceFolder}/pytest.ini",
+        "-o",
+        "consider_namespace_packages=true",
+        "${workspaceFolder}/tests"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
+}

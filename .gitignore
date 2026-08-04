@@ -8,6 +8,10 @@
 __pycache__/
 *.pyc
 
+# Development
+.venv/
+.env
+
 # No GeoPackages
 *.gpkg*
 *.bak

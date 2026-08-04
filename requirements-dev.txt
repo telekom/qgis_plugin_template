@@ -1,0 +1,4 @@
+# Development-only packages installed into the QGIS-derived virtual environment.
+pytest==9.0.2
+qgis-stubs==0.2.0.post1
+PyQt5-stubs==5.15.6.0
