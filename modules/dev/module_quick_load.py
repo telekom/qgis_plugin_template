@@ -18,12 +18,10 @@ FORM_CLASS, _ = UiModuleBase.get_uic_classes(__file__)
 
 class ClassNotFoundException(Exception):
     """ Raised when no suitable class is found in the loaded .py file. """
-    ...
 
 
 class UIQuickCheck(UiModuleBase, QFrame, FORM_CLASS):
-    """ A simple UI to test loading of .py files containing classes inheriting from UiModuleBase.
-    """
+    """ A simple UI to test loading of .py files containing classes inheriting from UiModuleBase. """
 
     def __init__(self, **kwargs: dict):
         super().__init__(**kwargs)
@@ -44,7 +42,8 @@ class UIQuickCheck(UiModuleBase, QFrame, FORM_CLASS):
         self.Btn_Unload_UI.setIcon(QIcon(self.getThemeIcon("mIconClose.svg")))
 
     def __load_to_ui(self):
-        """ Load a .py file containing a class inheriting from UiModuleBase and display it either as a popup or in the replacement frame.
+        """ Load a .py file containing a class inheriting from UiModuleBase and display it either as a popup
+            or in the replacement frame.
             The file must be located inside the plugin directory and use relative imports if needed.
         """
 
@@ -153,7 +152,7 @@ class UIQuickCheck(UiModuleBase, QFrame, FORM_CLASS):
             self._modules["LoadedModule"] = previous_module
 
     def __get_class_from_file(self, file_path: str):
-        """ try to load the file as a module and find a class inheriting from UiModuleBase.
+        """ Try to load the file as a module and find a class inheriting from UiModuleBase.
             The file must be located inside the plugin directory and use relative imports if needed.
 
             :param file_path: path to the .py file to load

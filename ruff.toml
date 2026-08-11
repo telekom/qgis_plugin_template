@@ -2,9 +2,35 @@ line-length = 120
 
 [lint]
 preview = true
-select = ["E", "F", "W", "RUF", "PL", "FURB", "SIM", "PLW", "PLR"]
-fixable = ["W291", "W293"]
-ignore =["PLR0904"]
+select = ["F",      # Pyflakes
+          "E",      # pycodestyle Error
+          "W",      # pycodestyle Warning
+          "RUF",    # Ruff specific rules
+          "FURB",   # refurb
+          "SIM",    # flake8 simplify (lots of use x instead of y)
+          "PLC",    # Pylint Convention
+          "PLE",    # Pylint Error (don't do that!)
+          "PLW",    # Pylint Warning (maybe don't do that)
+          "PLR",    # Pylint Refactor (maybe do this instead)
+          "D",      # pydocstyle for docstrings
+          "FIX",    # flake8 fixme (line contains fixme or todo, etc.)
+          ]
+
+fixable = ["W291",  # Trailing whitespace
+           "W293",  # Blank line contains whitespace
+           ]
+
+ignore = ["PLR0904",    # Too many public methods
+          "RUF012",     # Mutable default value for class attribute
+          "D210",       # No whitespaces allowed surrounding docstring text
+          "D400",       # First line should end with a period (docstring)
+          "D401",       # First line of docstring should be in imperative mood
+          "D415",       # First line should end with a period, question mark, or exclamation point
+          "D205",       # 1 blank line required between summary line and description
+          "D208",       # Docstring is over-indented
+          "D202",       # No blank lines allowed after function docstring
+          ]
 
 [lint.per-file-ignores]
-"__init__.py" = ["F401"]
+"__init__.py" = ["F401",    # ignore unused import in __init__.py files
+                 ]

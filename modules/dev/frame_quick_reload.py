@@ -10,6 +10,7 @@ import traceback
 from typing import List, Optional, Tuple, Type
 
 import sip
+
 from qgis.PyQt.QtCore import QEvent, QObject, QPoint, QRect, Qt, QTimer
 from qgis.PyQt.QtGui import QColor, QCursor, QFont, QPainter, QPen
 from qgis.PyQt.QtWidgets import QAction, QApplication, QGridLayout, QLayout, QWidget
@@ -20,7 +21,6 @@ from ...submodules.base.ui.base_plugin import Plugin
 
 class CustomFrameReloadException(Exception):
     """ Exception raised for errors during frame reloading. """
-    pass
 
 
 class FrameReloader:
@@ -86,7 +86,8 @@ class FrameReloader:
 
             :param cls: The class to reload.
             :return: The reloaded class.
-            :raises CustomFrameReloadException: If the module cannot be imported or the class is not found after reloading.
+            :raises CustomFrameReloadException: If the module cannot be imported or
+                    the class is not found after reloading.
         """
         module_name = cls.__module__
         purge_prefix = self._reload_prefix(module_name)
@@ -230,10 +231,9 @@ class FrameReloader:
             raise ValueError("Frame besitzt kein UI-Eltern-Modul und kann nicht "
                              "über die UI-Modulverwaltung neu geladen werden.")
 
-        validate_module = (
-            lambda new_module: self._raise_for_direct_module_conflicts(module, new_module)
-            if use_directly else None
-        )
+        def validate_module(new_module):
+            return (self._raise_for_direct_module_conflicts(module, new_module)
+                    if use_directly else None)
 
         def finalize_module(new_module: UiModuleBase):
             if use_directly:
@@ -377,7 +377,7 @@ class FramePicker(ModuleBase, QObject):
 
     def toggle(self):
         """ Toggle the frame picker on or off. """
-        self.cancel() if self._active else self.start()
+        _ = self.cancel() if self._active else self.start()
 
     def start(self):
         """ Start the frame picker, enabling interactive frame selection and reloading. """
@@ -391,7 +391,7 @@ class FramePicker(ModuleBase, QObject):
         QApplication.instance().installEventFilter(self)
         self._timer.start()
         self._set_action_checked(True)
-        self._status("Frame-Picker aktiv – Frame anklicken zum Neuladen. "
+        self._status("Frame-Picker aktiv - Frame anklicken zum Neuladen. "
                      "Mausrad: Eltern-Frame · Esc/Rechtsklick: Abbrechen.")
 
     def cancel(self):
@@ -482,7 +482,7 @@ class FramePicker(ModuleBase, QObject):
         if self._is_alive(self._overlay):
             self._overlay.show_for(rect, f"{target.__class__.__name__}{depth_info}")
         self._status(f"Neu laden: {target.__class__.__name__} "
-                     f"({target.module_name}) – Klick zum Neuladen, "
+                     f"({target.module_name}) - Klick zum Neuladen, "
                      f"Mausrad für Eltern-Frame ({index + 1}/{len(chain)}).")
 
     def eventFilter(self, obj, event):
@@ -492,10 +492,10 @@ class FramePicker(ModuleBase, QObject):
 
         etype = event.type()
         if etype == QEvent.MouseButtonPress:
-            self._commit(QCursor.pos()) if event.button() == Qt.LeftButton else self.cancel()
+            _ = self._commit(QCursor.pos()) if event.button() == Qt.LeftButton else self.cancel()
             return True
 
-        if etype in (QEvent.MouseButtonRelease, QEvent.MouseButtonDblClick):
+        if etype in {QEvent.MouseButtonRelease, QEvent.MouseButtonDblClick}:
             return True
 
         if etype == QEvent.Wheel:
