@@ -9,12 +9,7 @@ from ...submodules.base.ui.base_class import UiModuleBase
 from ...submodules.base.ui.dummy import ModuleDummy
 
 FORM_CLASS, BASE_CLASS = UiModuleBase.get_uic_classes(__file__)
-FORM_CLASS: 'Ui'
-try:
-    from .test_dynamic_module_list_generated_ui import Ui as FORM_CLASS
 
-except ModuleNotFoundError:
-    pass
 
 # here are some dummy modules to load/unload
 class TestModuleDummy(ModuleDummy):
