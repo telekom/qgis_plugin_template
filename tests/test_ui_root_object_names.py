@@ -18,6 +18,10 @@ def test_ui_root_object_name_does_not_collide_with_qgis_main_window(ui_file: Pat
     """ QGIS must not mistake a plugin UI root for its own MainWindow. 
         Otherwise it can happen that QGIS openes the first found MainWindow widget to focus on after login with OAuth2
         and redirect from webbrowser to QGIS.
+
+        QGIS: src/app/qgsappauthrequesthandler.cpp
+              >> void QgsAppAuthRequestHandler::handleAuthRequestCloseBrowser()
+
     """
     relative_path = ui_file.relative_to(PLUGIN_ROOT).as_posix()
     root_widget = ElementTree.parse(ui_file).getroot().find("widget")
