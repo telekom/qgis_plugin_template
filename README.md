@@ -85,6 +85,18 @@ rm -rf .git/modules/path/to/submodule
 git rm -f path/to/submodule
 ```
 
+#### Error handling
+
+In case of `fatal: No url found for submodule path '<path>' in .gitmodules`:
+
+1. Run `git ls-files --stage | grep 160000` to see some listed entries.
+
+2. Remove no more needed paths with `git rm --cached <path>`, e.g. `git rm --cached submodules/example-submodule`.
+
+3. Commit the changed file (deleted file)
+
+
+
 ## ToDos for you, when you use this template
 1. Edit [metadata.txt](metadata.txt) with basic information about author, name description, version etc.
    1. Edit the contact information (emailBugs)
