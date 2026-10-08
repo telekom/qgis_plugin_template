@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+# SPDX-FileCopyrightText: 2025 Deutsche Telekom Technik GmbH <f.vonstudsinske@telekom.de>
+# SPDX-License-Identifier: GPL-3.0-only
 """Regression checks for UI roots that could collide with QGIS' main window."""
 
 from pathlib import Path
