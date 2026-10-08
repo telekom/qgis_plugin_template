@@ -15,7 +15,7 @@ UI_FILES = tuple(sorted(PLUGIN_ROOT.rglob("*.ui")))
 
 @pytest.mark.parametrize("ui_file", UI_FILES, ids=lambda path: path.relative_to(PLUGIN_ROOT).as_posix())
 def test_ui_root_object_name_does_not_collide_with_qgis_main_window(ui_file: Path):
-    """ QGIS must not mistake a plugin UI root for its own MainWindow. 
+    """ QGIS must not mistake a plugin UI root for its own MainWindow.
         Otherwise it can happen that QGIS opens the first found MainWindow widget to focus on after login with OAuth2
         and redirect from webbrowser to QGIS.
 
