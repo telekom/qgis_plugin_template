@@ -104,8 +104,8 @@ class QgisDefaultThemeTable(QMainWindow, FORM_CLASS):
         self.PlainEdit_Code.setPlainText(code)
 
     def set_slider_label_text(self):
-        self.label_columns.setText(f"Columns ({self.slider_columns.value()} / {self.slider_columns.maximum()}):")
-        self.label_size.setText(f"Icon Size ({self.slider_size.value()} / {self.slider_size.maximum()}):")
+        self.Label_Columns.setText(f"Columns ({self.slider_columns.value()} / {self.slider_columns.maximum()}):")
+        self.Label_Size.setText(f"Icon Size ({self.slider_size.value()} / {self.slider_size.maximum()}):")
 
     def reset_table(self):
         self.search.setStyleSheet("")
@@ -121,16 +121,16 @@ class QgisDefaultThemeTable(QMainWindow, FORM_CLASS):
 
         QApplication.setOverrideCursor(Qt.BusyCursor)
         self.setEnabled(False)
-        self.Table_Icons.clear()
+        self.TableWidget_Icons.clear()
         self.c = self.slider_columns.value()
         self.r = ceil(len(files) / self.c)
-        self.Table_Icons.setColumnCount(self.c)
-        self.Table_Icons.setRowCount(self.r)
+        self.TableWidget_Icons.setColumnCount(self.c)
+        self.TableWidget_Icons.setRowCount(self.r)
         self.resize_cells()
         # extra width is the size of everything around the table
-        extra_width = self.width() - self.Table_Icons.viewport().width()
+        extra_width = self.width() - self.TableWidget_Icons.viewport().width()
         # new width is the width around the table + the width of the table with all icons
-        new_width = extra_width + self.Table_Icons.horizontalHeader().length()
+        new_width = extra_width + self.TableWidget_Icons.horizontalHeader().length()
         screen = self.screen() if hasattr(self, "screen") else None
         screen = screen or QApplication.primaryScreen()
         if screen is not None:
@@ -154,10 +154,10 @@ class QgisDefaultThemeTable(QMainWindow, FORM_CLASS):
         size = self.slider_size.value()
 
         # Headereinstellungen setzen, damit Header eine feste Breite & Höhe haben
-        self.Table_Icons.horizontalHeader().setMinimumSectionSize(size)
-        self.Table_Icons.verticalHeader().setMinimumSectionSize(size)
-        self.Table_Icons.horizontalHeader().setMaximumSectionSize(size)
-        self.Table_Icons.verticalHeader().setMaximumSectionSize(size)
+        self.TableWidget_Icons.horizontalHeader().setMinimumSectionSize(size)
+        self.TableWidget_Icons.verticalHeader().setMinimumSectionSize(size)
+        self.TableWidget_Icons.horizontalHeader().setMaximumSectionSize(size)
+        self.TableWidget_Icons.verticalHeader().setMaximumSectionSize(size)
 
         files = self.files
 
@@ -188,14 +188,14 @@ class QgisDefaultThemeTable(QMainWindow, FORM_CLASS):
                 button.setIcon(icon)
                 button.setIconSize(QSize(int(size * 0.9), int(size * 0.9)))
 
-                self.Table_Icons.setCellWidget(row, col, button)
-                self.Table_Icons.setColumnWidth(col, size)
-                self.Table_Icons.setRowHeight(row, size)
+                self.TableWidget_Icons.setCellWidget(row, col, button)
+                self.TableWidget_Icons.setColumnWidth(col, size)
+                self.TableWidget_Icons.setRowHeight(row, size)
 
         self.progress.setFormat(f"Tabelle geladen mit {len(files)} Icons.")
 
     def closeEvent(self, a0) -> None:
-        self.Table_Icons.clear()
+        self.TableWidget_Icons.clear()
         a0.accept()
 
 

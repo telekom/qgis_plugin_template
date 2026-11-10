@@ -72,12 +72,12 @@ class UIQuickCheck(UiModuleBase, QFrame, FORM_CLASS):
             self.critical("Load UI", str(e))
             return
 
-        if self.Radio_Popup.isChecked():
+        if self.RadioBtn_Popup.isChecked():
             module = self.add_module("LoadedModule",
                                      found_class,
                                      parent=self.iface.mainWindow())
             module.show()
-        elif self.Radio_Replacement.isChecked():
+        elif self.RadioBtn_Replacement.isChecked():
             try:
                 self.add_ui_module("LoadedModule", self.Frame_Replacement_Element, found_class)
                 self.is_loaded = True
@@ -97,7 +97,7 @@ class UIQuickCheck(UiModuleBase, QFrame, FORM_CLASS):
         if not self._last_file_path or not Path(self._last_file_path).exists():
             return
 
-        if self.Radio_Replacement.isChecked():
+        if self.RadioBtn_Replacement.isChecked():
             try:
                 found_class = self.__get_class_from_file(self._last_file_path)
             except ClassNotFoundException as e:
@@ -116,7 +116,7 @@ class UIQuickCheck(UiModuleBase, QFrame, FORM_CLASS):
             if previous_module:
                 previous_module.unload(self_unload=False)
             self.is_loaded = True
-        elif self.Radio_Popup.isChecked():
+        elif self.RadioBtn_Popup.isChecked():
             try:
                 found_class = self.__get_class_from_file(self._last_file_path)
             except ClassNotFoundException as e:
@@ -133,12 +133,12 @@ class UIQuickCheck(UiModuleBase, QFrame, FORM_CLASS):
             For popup mode, the module is unloaded without any frame manipulation.
         """
         mod = self._modules.get("LoadedModule")
-        if self.Radio_Replacement.isChecked():
+        if self.RadioBtn_Replacement.isChecked():
             if mod:
                 mod.unload(self_unload=True)
             self.replace_widget_with_widget(self.Frame_Replacement_Element, QFrame(self))
             self.is_loaded = False
-        elif self.Radio_Popup.isChecked():
+        elif self.RadioBtn_Popup.isChecked():
             if mod:
                 mod.unload(self_unload=True)
             self.is_loaded = False
