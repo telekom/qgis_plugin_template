@@ -85,7 +85,7 @@
        </widget>
       </item>
       <item row="4" column="0">
-       <widget class="QPushButton" name="But_UseLess">
+       <widget class="QPushButton" name="Btn_UseLess">
         <property name="text">
          <string>Nutzloser Knopf</string>
         </property>
