@@ -18,6 +18,7 @@ select = ["F",      # Pyflakes
 
 fixable = ["W291",  # Trailing whitespace
            "W293",  # Blank line contains whitespace
+           "W391",  # Too many newlines at end of file
            ]
 
 ignore = ["PLR0904",    # Too many public methods
