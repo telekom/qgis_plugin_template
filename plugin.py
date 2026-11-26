@@ -324,6 +324,14 @@ class PluginTemplate(Plugin):
         # load actions to run tests and other functionalities
         # add actions only in the dev-mode
         if self.is_dev_mode():
+            self.add_action(
+                "Python-Fehler auslösen",
+                QIcon(),
+                lambda: self.__trigger_python_error_test(),
+                to_plugin_menu=True,
+                tool_tip="Löst absichtlich einen Python-Fehler zum Testen der Fehlererkennung aus.",
+            )
+
             self.add_action(f"pytest ausführen (ohne pytest-Plugins)",
                             QIcon(),
                             lambda: run_pytest_from_ui(self),
@@ -345,6 +353,10 @@ class PluginTemplate(Plugin):
         # Do not add you actions in initGui, keep it clean and use load_tool_bar instead
         from .utilities.ui_control import load_tool_bar
         load_tool_bar(self)
+
+    def __trigger_python_error_test(self) -> None:
+        """Raise an intentional error to verify Python error detection."""
+        raise RuntimeError(f"Absichtlich ausgelöster Python-Fehler in {self.plugin_name}.")
 
     def __switch_logging_debug_mode(self):
         """ Disables the DEBUG logging from the plugin and restarts the plugin.
