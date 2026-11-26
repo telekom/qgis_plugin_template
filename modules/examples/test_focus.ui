@@ -67,7 +67,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QListWidget" name="List">
+             <widget class="QListWidget" name="ListWidget">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -86,18 +86,18 @@
              </widget>
             </item>
             <item>
-             <widget class="QListView" name="listView"/>
+             <widget class="QListView" name="ListView"/>
             </item>
             <item>
-             <widget class="QTreeView" name="treeView"/>
+             <widget class="QTreeView" name="TreeView"/>
             </item>
             <item>
-             <widget class="QTableView" name="tableView"/>
+             <widget class="QTableView" name="TableView"/>
             </item>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_11">
               <item>
-               <widget class="QLabel" name="Label_2">
+               <widget class="QLabel" name="Label_Selected">
                 <property name="text">
                  <string>x selektiert</string>
                 </property>
@@ -106,7 +106,7 @@
              </layout>
             </item>
             <item>
-             <widget class="QLabel" name="Label_4">
+             <widget class="QLabel" name="Label_Length">
               <property name="text">
                <string>x Länge</string>
               </property>
@@ -116,7 +116,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="Label_3">
+             <widget class="QLabel" name="Label_N">
               <property name="maximumSize">
                <size>
                 <width>500</width>
@@ -178,14 +178,14 @@
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_6">
               <item>
-               <widget class="QLabel" name="Label_5">
+               <widget class="QLabel" name="Label_A">
                 <property name="text">
                  <string>A</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QComboBox" name="DrD">
+               <widget class="QComboBox" name="DrD_A">
                 <property name="sizeAdjustPolicy">
                  <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
                 </property>
@@ -196,14 +196,14 @@
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_4">
               <item>
-               <widget class="QLabel" name="Label_6">
+               <widget class="QLabel" name="Label_B">
                 <property name="text">
                  <string>B</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QComboBox" name="DrD_2">
+               <widget class="QComboBox" name="DrD_B">
                 <property name="sizeAdjustPolicy">
                  <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
                 </property>
@@ -217,14 +217,14 @@
                <enum>QLayout::SetDefaultConstraint</enum>
               </property>
               <item>
-               <widget class="QLabel" name="Label_7">
+               <widget class="QLabel" name="Label_C">
                 <property name="text">
                  <string>C</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QComboBox" name="DrD_3">
+               <widget class="QComboBox" name="DrD_C">
                 <property name="sizeAdjustPolicy">
                  <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
                 </property>
@@ -235,14 +235,14 @@
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_7">
               <item>
-               <widget class="QLabel" name="Label_8">
+               <widget class="QLabel" name="Label_D">
                 <property name="text">
                  <string>D</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QComboBox" name="DrD_4">
+               <widget class="QComboBox" name="DrD_D">
                 <property name="sizeAdjustPolicy">
                  <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
                 </property>
@@ -253,14 +253,14 @@
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_8">
               <item>
-               <widget class="QLabel" name="Label_9">
+               <widget class="QLabel" name="Label_E">
                 <property name="text">
                  <string>E</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QComboBox" name="DrD_5">
+               <widget class="QComboBox" name="DrD_E">
                 <property name="sizeAdjustPolicy">
                  <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
                 </property>
@@ -271,14 +271,14 @@
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_12">
               <item>
-               <widget class="QLabel" name="Label_10">
+               <widget class="QLabel" name="Label_F">
                 <property name="text">
                  <string>F</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QComboBox" name="DrD_6">
+               <widget class="QComboBox" name="DrD_F">
                 <property name="sizeAdjustPolicy">
                  <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
                 </property>
@@ -289,14 +289,14 @@
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_3">
               <item>
-               <widget class="QLabel" name="Label_11">
+               <widget class="QLabel" name="Label_G">
                 <property name="text">
                  <string>G</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QComboBox" name="DrD_7">
+               <widget class="QComboBox" name="DrD_G">
                 <property name="sizeAdjustPolicy">
                  <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
                 </property>
@@ -307,14 +307,14 @@
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_10">
               <item>
-               <widget class="QLabel" name="Label_12">
+               <widget class="QLabel" name="Label_H">
                 <property name="text">
                  <string>H</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QComboBox" name="DrD_8">
+               <widget class="QComboBox" name="DrD_H">
                 <property name="sizeAdjustPolicy">
                  <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
                 </property>
@@ -325,14 +325,14 @@
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_9">
               <item>
-               <widget class="QLabel" name="Label_13">
+               <widget class="QLabel" name="Label_I">
                 <property name="text">
                  <string>I</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QComboBox" name="DrD_9">
+               <widget class="QComboBox" name="DrD_I">
                 <property name="sizeAdjustPolicy">
                  <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
                 </property>
@@ -355,7 +355,7 @@
                <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_13">
                  <item>
-                  <widget class="QLabel" name="Label_15">
+                  <widget class="QLabel" name="Label_J1">
                    <property name="text">
                     <string>J1</string>
                    </property>
@@ -375,7 +375,7 @@
                   </spacer>
                  </item>
                  <item>
-                  <widget class="QLineEdit" name="LineEdit">
+                  <widget class="QLineEdit" name="LineEdit_J1">
                    <property name="maximumSize">
                     <size>
                      <width>167</width>
@@ -391,7 +391,7 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLabel" name="Label_16">
+                  <widget class="QLabel" name="Label_J1_Unit">
                    <property name="text">
                     <string>m</string>
                    </property>
@@ -402,7 +402,7 @@
                <item>
                 <layout class="QHBoxLayout" name="horizontalLayout">
                  <item>
-                  <widget class="QLabel" name="Label_17">
+                  <widget class="QLabel" name="Label_J2">
                    <property name="text">
                     <string>J2</string>
                    </property>
@@ -422,7 +422,7 @@
                   </spacer>
                  </item>
                  <item>
-                  <widget class="QLineEdit" name="LineEdit_2">
+                  <widget class="QLineEdit" name="LineEdit_J2">
                    <property name="maximumSize">
                     <size>
                      <width>167</width>
@@ -438,7 +438,7 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLabel" name="Label_18">
+                  <widget class="QLabel" name="Label_J2_Unit">
                    <property name="text">
                     <string>m</string>
                    </property>
@@ -452,7 +452,7 @@
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_5">
               <item>
-               <widget class="QCheckBox" name="CheckBox">
+               <widget class="QCheckBox" name="CheckBox_K">
                 <property name="text">
                  <string>K</string>
                 </property>
@@ -475,7 +475,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QLabel" name="Label_14">
+               <widget class="QLabel" name="Label_K1">
                 <property name="text">
                  <string>K1</string>
                 </property>
@@ -497,21 +497,21 @@
              </layout>
             </item>
             <item>
-             <widget class="QCheckBox" name="CheckBox_2">
+             <widget class="QCheckBox" name="CheckBox_L">
               <property name="text">
                <string>L</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QCheckBox" name="CheckBox_3">
+             <widget class="QCheckBox" name="CheckBox_M">
               <property name="text">
                <string>M</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QRadioButton" name="radioButton">
+             <widget class="QRadioButton" name="RadioBtn">
               <property name="text">
                <string>RadioButton</string>
               </property>
@@ -521,7 +521,7 @@
              <widget class="QWidget" name="Widget_Vorhaben_Filter" native="true">
               <layout class="QVBoxLayout" name="verticalLayout_3">
                <item>
-                <widget class="QListWidget" name="List_2">
+                <widget class="QListWidget" name="ListWidget_Vorhaben">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
                    <horstretch>0</horstretch>
@@ -554,10 +554,14 @@
              </spacer>
             </item>
             <item>
-             <widget class="QgsMapLayerComboBox" name="mMapLayerComboBox"/>
+             <widget class="QgsMapLayerComboBox" name="LayerDrD">
+              <property name="sizeAdjustPolicy">
+               <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
+              </property>
+             </widget>
             </item>
             <item>
-             <widget class="QTableWidget" name="tableWidget"/>
+             <widget class="QTableWidget" name="TableWidget"/>
             </item>
             <item>
              <widget class="QPushButton" name="Btn_Filter">
@@ -586,7 +590,7 @@
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QFrame" name="Frame_Progress_Bar">
+        <widget class="QFrame" name="Frame_ProgressBar">
          <property name="frameShape">
           <enum>QFrame::StyledPanel</enum>
          </property>

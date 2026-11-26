@@ -14,7 +14,6 @@
         "${workspaceFolder}/.venv/Scripts/python.exe"
     ],
     "pylint.importStrategy": "useBundled",
-    "ruff.nativeServer": "on",
     "ruff.configuration": "${workspaceFolder}/ruff.toml",
     "files.trimTrailingWhitespace": false,
     "[python]": {
