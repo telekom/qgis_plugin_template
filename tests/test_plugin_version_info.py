@@ -3,13 +3,16 @@
 # SPDX-License-Identifier: GPL-3.0-only
 """ Tests for loading the repository version info in the plugin template. """
 
+import pytest
+
 from collections.abc import Callable
 from pkg_resources import packaging
 from types import SimpleNamespace
 from unittest.mock import Mock
 
-from ..plugin import PluginTemplate
+from ..plugin import TEMPLATE_VERSION, PluginTemplate
 from ..submodules.base.constants import VersionError, VersionInfo
+from ..utilities import plugin_migration
 
 
 def _fake_plugin(repo_xml_path: str, lookup: Callable[..., object]) -> SimpleNamespace:
@@ -72,3 +75,21 @@ def test_load_version_info_raised_error() -> None:
 
     assert fake.repo_version is None
     assert fake.repo_version_error == "unknown authcfg"
+
+
+@pytest.mark.parametrize("saved_version", [None, "no version"])
+def test_load_template_version_migrates_without_valid_saved_version(monkeypatch: pytest.MonkeyPatch,
+                                                                     saved_version: str | None) -> None:
+    """ Run the migration without a previous version, if no valid template version is saved.
+
+        :param monkeypatch: pytest monkeypatch fixture
+        :param saved_version: template version saved in the user profile
+    """
+    migrate = Mock()
+    monkeypatch.setattr(plugin_migration, "migrate", migrate)
+    fake = SimpleNamespace(get_option=Mock(return_value=saved_version), set_option=Mock())
+
+    PluginTemplate._PluginTemplate__load_plugin_template_version(fake)
+
+    migrate.assert_called_once_with(fake, packaging.version.parse(TEMPLATE_VERSION), None)
+    fake.set_option.assert_called_once_with("PluginTemplateVersion", TEMPLATE_VERSION)

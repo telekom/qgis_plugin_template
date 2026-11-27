@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 # SPDX-FileCopyrightText: 2025 Deutsche Telekom Technik GmbH <f.vonstudsinske@telekom.de>
 # SPDX-License-Identifier: GPL-3.0-only
+""" Main plugin class of the plugin template. """
 
 import configparser
+import contextlib
 import os
 import os.path
 import shutil
@@ -45,12 +47,19 @@ class PluginTemplate(Plugin):
         :param kwargs: dictionary with keyword arguments, if empty -> then QGIS handle this plugin, else an other
                        ModuleBase loads this
     """
+
     pluginUnloaded = pyqtSignal(name="pluginUnloaded")
     pluginReloaded = pyqtSignal(name="pluginReloaded")
     versionRead = pyqtSignal(ModuleBase, name="versionRead")
     feedbackClicked = pyqtSignal(ModuleBase, name="feedbackClicked")
 
     def __init__(self, iface: QgisInterface, *args, **kwargs: dict):
+        """ Read the plugin metadata, initialize the plugin and load the version info.
+
+            :param iface: QGIS interface
+            :param args: positional arguments for Plugin
+            :param kwargs: keyword arguments for Plugin
+        """
 
         self._iface: QgisInterface = iface
 
@@ -128,11 +137,11 @@ class PluginTemplate(Plugin):
                  extra={'is_dev_mode': self.is_dev_mode()})
 
     def is_logging_debug_active(self) -> bool:
+        """ Return True, if the DEBUG logging marker file exists in the plugin folder. """
         return (Path(self.plugin_dir) / "logging_level_debug.debug").is_file()
 
     def is_accessibility_mode_active(self) -> bool:
-        """ Checks if accessibility mode is active by reading the config file
-        """
+        """ Checks if accessibility mode is active by reading the config file """
         self._accessibility_config.read(self.accessibility_config_path)
         return self._accessibility_config.getboolean('accessibility', 'enable', fallback=False)
 
@@ -148,7 +157,7 @@ class PluginTemplate(Plugin):
         if saved_template_version is not None:
             try:
                 saved_template_version = packaging.version.parse(saved_template_version)
-            except:
+            except (packaging.version.InvalidVersion, TypeError):
                 saved_template_version = None
 
         if saved_template_version is None or current_version > saved_template_version:
@@ -193,13 +202,14 @@ class PluginTemplate(Plugin):
         """ Load the developer frame picker into the existing plugin UI. """
         from .modules.dev.frame_quick_reload import FramePicker
 
-        if "FramePicker" not in self:
+        # explicit branches, because adding the module is a side effect
+        if "FramePicker" not in self:  # noqa: SIM108
             picker = self.add_module("FramePicker", FramePicker)
         else:
             picker = self["FramePicker"]
 
         action = self.add_action(
-            f"Frame neu laden (Picker)",
+            "Frame neu laden (Picker)",
             self.getThemeIcon("cursors/mSelect.svg"),
             None,  # connected manually below to receive the checked state
             toolbar_name=self.plugin_menu_name,
@@ -215,6 +225,11 @@ class PluginTemplate(Plugin):
             lambda checked: picker.start() if checked else picker.cancel())
 
     def check_map_tool_changed(self, new_tool, old_tool):
+        """ Remove all temporary drawings from the map canvas, when the map tool changed.
+
+            :param new_tool: activated map tool
+            :param old_tool: previous map tool
+        """
         for drawing in self.drawings:
             if drawing:
                 self.iface.mapCanvas().scene().removeItem(drawing)
@@ -222,6 +237,7 @@ class PluginTemplate(Plugin):
         self.drawings.clear()
 
     def get_temp_folder(self):
+        """ Create and return a new timestamped temporary folder of the plugin. """
         path = os.path.join(self.temp_files,
                             datetime.now().strftime("_%Y-%m-%d_%H-%M-%S_%f"))
         if not os.path.exists(path):
@@ -230,14 +246,12 @@ class PluginTemplate(Plugin):
         return path
 
     def clear_temp_files(self):
-        """ cleanup all temp files. Nothing happens on blocking process """
-        try:
+        """ Cleanup all temp files. Nothing happens on blocking process """
+        with contextlib.suppress(OSError):
             shutil.rmtree(self.temp_files)
-        except OSError:
-            ...
 
     def clear_log_files(self):
-        """ remove all log file older than X days """
+        """ Remove all log file older than X days """
         files = get_files(self.log_dir)
         for file in files:
             time_file = os.path.getmtime(file)
@@ -265,11 +279,11 @@ class PluginTemplate(Plugin):
                 path.rmdir()
 
     def is_module(self) -> bool:
-        """ is this a module loaded by another module? """
+        """ Is this a module loaded by another module? """
         path = Path(QgsApplication.qgisSettingsDirPath()) / 'python' / 'plugins'
         path = path / Path(self.plugin_dir).name / Path(__file__).name
 
-        return not (path == Path(__file__))
+        return path != Path(__file__)
 
     # noinspection PyPep8Naming
     def initGui(self):
@@ -301,7 +315,7 @@ class PluginTemplate(Plugin):
         # add log action to menu bar, only if this the plugin object and not a boring module
         if self.is_qgis_plugin():
             icon = self.getThemeIcon("mIconFieldTime.svg")
-            self.add_action(f"Protokoll-Ordner öffnen",
+            self.add_action("Protokoll-Ordner öffnen",
                             icon,
                             lambda: self.webbrowser_open(Path(self.log_file_path).parent))
 
@@ -315,11 +329,11 @@ class PluginTemplate(Plugin):
                         "Diese Funktion sollte zur Fehlerbehebung verwendet werden, "
                         "wenn beispielsweise das Plugin komplett abstürzt und nicht mehr reagiert.")
             icon = QIcon(self.getThemeIcon("mActionTiltDown.svg"))
-            self.add_action(f"Plugin (+ Module) neuladen",
+            self.add_action("Plugin (+ Module) neuladen",
                             icon,
                             lambda: self.reload(),
                             tool_tip=tool_tip)
-            self.add_action(f"Plugineinstellungen zurücksetzen",
+            self.add_action("Plugineinstellungen zurücksetzen",
                             QIcon(),
                             lambda: self.clear_options(),
                             tool_tip="Im Plugin zwischengespeicherte Optionen/Einstellungen auf Standard setzen.")
@@ -335,12 +349,13 @@ class PluginTemplate(Plugin):
                 tool_tip="Löst absichtlich einen Python-Fehler zum Testen der Fehlererkennung aus.",
             )
 
-            self.add_action(f"pytest ausführen (ohne pytest-Plugins)",
+            self.add_action("pytest ausführen (ohne pytest-Plugins)",
                             QIcon(),
                             lambda: run_pytest_from_ui(self),
-                            tool_tip="Führt pytest für das aktuelle Plugin über die Benutzeroberläche aus.\n"
+                            tool_tip="Führt pytest für das aktuelle Plugin über die Benutzeroberäche aus.\n"
                                      "tests.py: run_pytest_from_ui-Funktion wird aufgerufen.\n\n"
-                                     "Kann möglicherweise nur einmalig ausgeführt werden (QGIS CRASH DANACH MÖGLICH).\n\n"
+                                     "Kann möglicherweise nur einmalig ausgeführt werden "
+                                     "(QGIS CRASH DANACH MÖGLICH).\n\n"
                                      "Alle pytest-Plugins sind deaktiviert.")
 
             # TestDockWidget, you can comment this out, when you don't need to test these classes
@@ -362,8 +377,7 @@ class PluginTemplate(Plugin):
         raise RuntimeError(f"Absichtlich ausgelöster Python-Fehler in {self.plugin_name}.")
 
     def __switch_logging_debug_mode(self):
-        """ Disables the DEBUG logging from the plugin and restarts the plugin.
-        """
+        """ Disables the DEBUG logging from the plugin and restarts the plugin. """
         current_state = "aktiv" if self.is_logging_debug_active() else "inaktiv"
         new_state = "deaktivieren" if self.is_logging_debug_active() else "aktivieren"
 
@@ -398,8 +412,7 @@ class PluginTemplate(Plugin):
         self.reload()
 
     def __switch_accessibility_mode(self):
-        """ Disables/Enables the accessibility mode from the plugin and restarts the plugin.
-        """
+        """ Disables/Enables the accessibility mode from the plugin and restarts the plugin. """
         self._accessibility_config.read(self.accessibility_config_path)
         if self.is_accessibility_mode_active():
             self._accessibility_config.set('accessibility', 'enable', 'false')
@@ -408,18 +421,19 @@ class PluginTemplate(Plugin):
                 self._accessibility_config.add_section('accessibility')
             self._accessibility_config.set('accessibility', 'enable', 'true')
 
-        with open(self.accessibility_config_path, 'w', encoding='utf-8')  as configfile:
+        with open(self.accessibility_config_path, 'w', encoding='utf-8') as configfile:
             self._accessibility_config.write(configfile)
 
         self.reload()
 
     def reloaded(self):
+        """ Show a success message after the plugin has been reloaded. """
         self.iface.messageBar().pushSuccess(
             f"{self.plugin_menu_name}",
             "QGIS-Plugin erfolgreich neugestartet")
 
     def reload(self):
-        """ reloads this QGIS plugin """
+        """ Reloads this QGIS plugin """
         if not self.is_qgis_plugin():
             return
 
@@ -454,6 +468,7 @@ class PluginTemplate(Plugin):
         self.clear_temp_files()
 
     def __repr__(self) -> str:
+        """ Return a representation with version, menu name and managing object. """
         if self.is_qgis_plugin():
             managed_by = "QgsApplication(stand-alone)"
             plugin = ""
