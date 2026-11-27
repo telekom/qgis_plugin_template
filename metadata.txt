@@ -35,6 +35,8 @@ deprecated=False
 # Necessary, when you want to use this 'Plugin Template' as a stand-alone installation via default QGIS Plugin Repositories
 # pluginXmlUrl: where to locate this Plugin in a separate plugins.xml to handle it by QGIS
 pluginXmlUrl=
+# pluginRepositoryAuthcfg: optional QGIS authcfg ID for the plugin version request
+pluginRepositoryAuthcfg=
 # zipFilename: zip file name of this plugin defined in plugins.xml to search for it inside the xml DOM
 zipFilename=
 # emailBugs: internal email address to send errors or feedback to

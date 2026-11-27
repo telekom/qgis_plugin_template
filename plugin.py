@@ -94,6 +94,7 @@ class PluginTemplate(Plugin):
         self.email = VersionPlugin.get_meta_value(self.meta_file, "emailBugs")
 
         self.repo_xml_path = VersionPlugin.get_local_xml_url(self.meta_file)
+        self.repo_auth_cfg = VersionPlugin.get_local_repository_authcfg(self.meta_file)
         self.zip_file_name = VersionPlugin.get_local_zipname(self.meta_file)
         self.repo_version = None
         self.repo_version_error = None
@@ -167,14 +168,18 @@ class PluginTemplate(Plugin):
     def load_version_info(self):
 
         # set default values
-        self.repo_version = "-1"
+        self.repo_version = "-1" if not self.repo_xml_path else None
         self.repo_commit = None
         self.repo_version_data = None
         self.repo_version_error = "no repository url defined in metadata.txt"
 
         if self.repo_xml_path:
-            self.repo_version_data = VersionPlugin.get_repository_version_zipname(
-                self.repo_xml_path, self.zip_file_name)
+            self.repo_version_error = None
+            try:
+                self.repo_version_data = VersionPlugin.get_repository_version_zipname(
+                    self.repo_xml_path, self.zip_file_name, auth_cfg=self.repo_auth_cfg)
+            except constants.VersionError as error:
+                self.repo_version_data = error
 
             if isinstance(self.repo_version_data, constants.VersionInfo):
                 # valid version found
