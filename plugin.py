@@ -23,7 +23,6 @@ from qgis.PyQt.QtCore import pyqtSignal
 from .test import run_pytest_from_ui
 
 from .submodules.base import constants
-from .submodules.base.versions_reader import VersionPlugin
 from .submodules.base.functions import qgis_unload_keyerror, get_files
 
 from .submodules.base.ui.base_class import ModuleBase
@@ -65,15 +64,15 @@ class PluginTemplate(Plugin):
         self.plugin_import_name = os.path.basename(self.plugin_dir)
         self.meta_file = os.path.join(self.plugin_dir, 'metadata.txt')
         self.icons_dir = os.path.join(self.plugin_dir, 'templates', 'icons')
-        self.plugin_version = VersionPlugin.get_local_version(self.meta_file)
-        self.plugin_name = VersionPlugin.get_meta_value(self.meta_file, "name")
-        self.plugin_menu_name = VersionPlugin.get_meta_value(self.meta_file, "name_menu_bar")
-        self.homepage_url = VersionPlugin.get_meta_value(self.meta_file, "homepage")
+        self.plugin_version = self.get_local_version(self.meta_file)
+        self.plugin_name = self.get_meta_value(self.meta_file, "name")
+        self.plugin_menu_name = self.get_meta_value(self.meta_file, "name_menu_bar")
+        self.homepage_url = self.get_meta_value(self.meta_file, "homepage")
         # similar to `Qgis.versionInt()`
         self.minimum_qgis_version = packaging.version.parse(
-            VersionPlugin.get_meta_value(self.meta_file, "qgisMinimumVersion"))
+            self.get_meta_value(self.meta_file, "qgisMinimumVersion"))
         self.maximum_qgis_version = packaging.version.parse(
-            VersionPlugin.get_meta_value(self.meta_file, "qgisMaximumVersion"))
+            self.get_meta_value(self.meta_file, "qgisMaximumVersion"))
 
         # logging settings
         log_day = time.strftime("%Y_%m_%d", time.localtime())
@@ -85,17 +84,17 @@ class PluginTemplate(Plugin):
         self.temp_files = os.path.join(QgsApplication.qgisSettingsDirPath(), '_temp_files', self.log_filename)
         self.logging_level_debug = self.is_logging_debug_active()
         # developer settings
-        self.force_dev_mode = VersionPlugin.get_meta_value(self.meta_file, "force_dev_mode").lower() == "true"
+        self.force_dev_mode = self.get_meta_value(self.meta_file, "force_dev_mode").lower() == "true"
 
         # accessibility settings
         self.accessibility_config_path = os.path.join(self.plugin_dir, "accessibility_mode.ini")
         self._accessibility_config = configparser.ConfigParser()
 
-        self.email = VersionPlugin.get_meta_value(self.meta_file, "emailBugs")
+        self.email = self.get_meta_value(self.meta_file, "emailBugs")
 
-        self.repo_xml_path = VersionPlugin.get_local_xml_url(self.meta_file)
-        self.repo_auth_cfg = VersionPlugin.get_local_repository_authcfg(self.meta_file)
-        self.zip_file_name = VersionPlugin.get_local_zipname(self.meta_file)
+        self.repo_xml_path = self.get_local_xml_url(self.meta_file)
+        self.repo_auth_cfg = self.get_local_repository_authcfg(self.meta_file)
+        self.zip_file_name = self.get_local_zipname(self.meta_file)
         self.repo_version = None
         self.repo_version_error = None
         self.repo_commit = None
@@ -103,7 +102,7 @@ class PluginTemplate(Plugin):
 
         try:
             # get latest git commit from metadata.txt
-            self.commit = VersionPlugin.get_meta_value(self.meta_file, "commit")
+            self.commit = self.get_meta_value(self.meta_file, "commit")
         except KeyError:
             self.commit = None
 
@@ -176,7 +175,7 @@ class PluginTemplate(Plugin):
         if self.repo_xml_path:
             self.repo_version_error = None
             try:
-                self.repo_version_data = VersionPlugin.get_repository_version_zipname(
+                self.repo_version_data = self.get_repository_version_zipname(
                     self.repo_xml_path, self.zip_file_name, auth_cfg=self.repo_auth_cfg)
             except constants.VersionError as error:
                 self.repo_version_data = error
