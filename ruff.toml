@@ -39,6 +39,7 @@ ignore = ["PLR0904",    # Too many public methods
           "D205",       # 1 blank line required between summary line and description
           "D208",       # Docstring is over-indented
           "D202",       # No blank lines allowed after function docstring
+          "PLC0415",    # Import outside top-level (intended for circular imports and optional packages)
           ]
 
 [lint.per-file-ignores]

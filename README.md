@@ -100,6 +100,7 @@ In case of `fatal: No url found for submodule path '<path>' in .gitmodules`:
 ## ToDos for you, when you use this template
 1. Edit [metadata.txt](metadata.txt) with basic information about author, name description, version etc.
    1. Edit the contact information (emailBugs)
+   1. Optionally set `pluginRepositoryAuthcfg` to a QGIS authcfg ID for authenticated version checks; leave it empty for anonymous requests.
 2. Edit [plugin.py](plugin.py)
    1. rename class to your new plugin name (keep in mind to use meaningful names in PEP8 style)
    2. Go to method `initGui` and look for `test_dockwidget.init` and show what it does
