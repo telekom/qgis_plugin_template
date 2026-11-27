@@ -6,12 +6,12 @@
 import pytest
 
 from collections.abc import Callable
-from pkg_resources import packaging
 from types import SimpleNamespace
 from unittest.mock import Mock
 
 from ..plugin import TEMPLATE_VERSION, PluginTemplate
 from ..submodules.base.constants import VersionError, VersionInfo
+from ..submodules.base.version import Version
 from ..utilities import plugin_migration
 
 
@@ -39,7 +39,7 @@ def test_load_version_info_without_url() -> None:
 
 def test_load_version_info_success() -> None:
     """ Store a found version and pass the authcfg to the lookup. """
-    info = VersionInfo(packaging.version.parse("1.0.0"), "1.0.0", "abc", None, None)
+    info = VersionInfo(Version("1.0.0"), "1.0.0", "abc", None, None)
     fake = _fake_plugin("https://x", lambda *args, **kwargs: info)
 
     PluginTemplate.load_version_info(fake)
@@ -77,9 +77,9 @@ def test_load_version_info_raised_error() -> None:
     assert fake.repo_version_error == "unknown authcfg"
 
 
-@pytest.mark.parametrize("saved_version", [None, "no version"])
+@pytest.mark.parametrize("saved_version", [None, "no version", 123])
 def test_load_template_version_migrates_without_valid_saved_version(monkeypatch: pytest.MonkeyPatch,
-                                                                     saved_version: str | None) -> None:
+                                                                     saved_version: str | int | None) -> None:
     """ Run the migration without a previous version, if no valid template version is saved.
 
         :param monkeypatch: pytest monkeypatch fixture
@@ -91,5 +91,29 @@ def test_load_template_version_migrates_without_valid_saved_version(monkeypatch:
 
     PluginTemplate._PluginTemplate__load_plugin_template_version(fake)
 
-    migrate.assert_called_once_with(fake, packaging.version.parse(TEMPLATE_VERSION), None)
+    migrate.assert_called_once_with(fake, Version(TEMPLATE_VERSION), None)
+    fake.set_option.assert_called_once_with("PluginTemplateVersion", TEMPLATE_VERSION)
+
+
+@pytest.mark.parametrize(("saved_version", "should_migrate"), [
+    ("1", True), ("1.1", True), ("1.2", False), ("v1.2.0", False), ("1.3", False),
+])
+def test_load_template_version_compares_saved_version(monkeypatch: pytest.MonkeyPatch, saved_version: str,
+                                                      should_migrate: bool) -> None:
+    """ Migrate only when the saved template version is older.
+
+        :param monkeypatch: pytest monkeypatch fixture
+        :param saved_version: template version saved in the user profile
+        :param should_migrate: whether migration is expected
+    """
+    migrate = Mock()
+    monkeypatch.setattr(plugin_migration, "migrate", migrate)
+    fake = SimpleNamespace(get_option=Mock(return_value=saved_version), set_option=Mock())
+
+    PluginTemplate._PluginTemplate__load_plugin_template_version(fake)
+
+    if should_migrate:
+        migrate.assert_called_once_with(fake, Version(TEMPLATE_VERSION), Version(saved_version))
+    else:
+        migrate.assert_not_called()
     fake.set_option.assert_called_once_with("PluginTemplateVersion", TEMPLATE_VERSION)

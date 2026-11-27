@@ -12,7 +12,6 @@ import time
 
 from datetime import datetime
 from pathlib import Path
-from pkg_resources import packaging
 from qgis.core import QgsApplication
 from qgis.gui import QgisInterface
 from qgis.PyQt.QtCore import pyqtSignal
@@ -24,6 +23,7 @@ from .submodules.base.functions import get_files, qgis_unload_keyerror
 from .submodules.base.ui.base_class import ModuleBase
 from .submodules.base.ui.base_plugin import Plugin
 from .submodules.base.ui.confirmation_dialog import ConfirmationDialog
+from .submodules.base.version import Version
 from .test import run_pytest_from_ui
 
 
@@ -73,9 +73,9 @@ class PluginTemplate(Plugin):
         self.plugin_menu_name = self.get_meta_value(self.meta_file, "name_menu_bar")
         self.homepage_url = self.get_meta_value(self.meta_file, "homepage")
         # similar to `Qgis.versionInt()`
-        self.minimum_qgis_version = packaging.version.parse(
+        self.minimum_qgis_version = Version(
             self.get_meta_value(self.meta_file, "qgisMinimumVersion"))
-        self.maximum_qgis_version = packaging.version.parse(
+        self.maximum_qgis_version = Version(
             self.get_meta_value(self.meta_file, "qgisMaximumVersion"))
 
         # logging settings
@@ -150,14 +150,14 @@ class PluginTemplate(Plugin):
             Calls possible migration method for further migrations due to template changes.
             E.g. changes in the user profile settings.
         """
-        current_version = packaging.version.parse(TEMPLATE_VERSION)
+        current_version = Version(TEMPLATE_VERSION)
 
         # get latest saved template version in user's profile settings
         saved_template_version = self.get_option("PluginTemplateVersion")
         if saved_template_version is not None:
             try:
-                saved_template_version = packaging.version.parse(saved_template_version)
-            except (packaging.version.InvalidVersion, TypeError):
+                saved_template_version = Version(saved_template_version)
+            except (ValueError, TypeError):
                 saved_template_version = None
 
         if saved_template_version is None or current_version > saved_template_version:
