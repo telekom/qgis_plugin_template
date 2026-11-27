@@ -3,17 +3,77 @@
 # SPDX-License-Identifier: GPL-3.0-only
 """ pytest runners for console and QGIS UI execution. """
 
+import configparser
+import os
 import sys
 import traceback
-import os
 
 from datetime import datetime
 from pathlib import Path
 
 from qgis.core import QgsApplication
 from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtWidgets import (QDialog, QLabel, QProgressBar, QPushButton,
-                                 QMessageBox, QVBoxLayout)
+from qgis.PyQt.QtWidgets import (QDialog, QFileDialog, QLabel, QProgressBar,
+                                 QPushButton, QMessageBox, QVBoxLayout)
+
+
+PYTEST_ENVIRONMENT_SECTION = "pytest-environment-variables"
+_MISSING_ENVIRONMENT_VALUE = object()
+
+
+def load_pytest_environment_variables(env_file: Path) -> dict:
+    """ Load temporary pytest environment variables from an INI file.
+
+        :param env_file: selected INI or ENV file
+        :return: environment variable names and values
+    """
+    parser = configparser.ConfigParser(interpolation=None)
+    parser.optionxform = str
+
+    with env_file.open("r", encoding="utf-8") as file:
+        parser.read_file(file)
+
+    if not parser.has_section(PYTEST_ENVIRONMENT_SECTION):
+        raise ValueError(f'Die Datei enthält keine Sektion "[{PYTEST_ENVIRONMENT_SECTION}]".')
+
+    variables = dict(parser.items(PYTEST_ENVIRONMENT_SECTION, raw=True))
+    if not variables:
+        raise ValueError(f'Die Sektion "[{PYTEST_ENVIRONMENT_SECTION}]" enthält keine Variablen.')
+
+    for name, value in variables.items():
+        if not name or "=" in name or "\x00" in name:
+            raise ValueError(f"Ungültiger Umgebungsvariablenname: {name!r}")
+        if "\x00" in value:
+            raise ValueError(f"Umgebungsvariable {name!r} enthält ein Null-Zeichen.")
+
+    return variables
+
+
+def apply_pytest_environment_variables(variables: dict) -> dict:
+    """ Apply temporary environment variables and return their previous state.
+
+        :param variables: environment variable names and values
+        :return: previous environment state
+    """
+    previous_state = {}
+
+    for name, value in variables.items():
+        previous_state[name] = os.environ.get(name, _MISSING_ENVIRONMENT_VALUE)
+        os.environ[name] = value
+
+    return previous_state
+
+
+def restore_pytest_environment_variables(previous_state: dict) -> None:
+    """ Restore the environment state captured before pytest execution.
+
+        :param previous_state: previous environment state
+    """
+    for name, value in previous_state.items():
+        if value is _MISSING_ENVIRONMENT_VALUE:
+            os.environ.pop(name, None)
+        else:
+            os.environ[name] = value
 
 
 class PytestStatusDialog(QDialog):
@@ -265,17 +325,41 @@ def run_pytest_from_ui(plugin):
     # set the absolute path to the pytest ini to be uses in the tests
     config = Path(plugin.plugin_dir) / "pytest.ini"
 
+    env_file_path, _ = QFileDialog.getOpenFileName(
+        plugin.iface.mainWindow(),
+        "[optional] Umgebungsvariablen-Datei auswählen (oder abbrechen ohne geänderte Umgebungsvariablen)",
+        plugin.plugin_dir,
+        "INI-/ENV-Dateien (*.env *.ini);;Alle Dateien (*.*)")
+
+    pytest_environment = {}
+    if env_file_path:
+        env_file = Path(env_file_path)
+        if not env_file.is_file():
+            QMessageBox.warning(plugin.iface.mainWindow(),
+                                "pytest",
+                                f"Die Umgebungsvariablen-Datei existiert nicht:\n{env_file}")
+            return
+
+        try:
+            pytest_environment = load_pytest_environment_variables(env_file)
+        except (configparser.Error, OSError, UnicodeDecodeError, ValueError) as error:
+            QMessageBox.warning(plugin.iface.mainWindow(),
+                                "pytest",
+                                f"Die Umgebungsvariablen-Datei ist ungültig:\n{env_file}\n\n{error}")
+            return
+
     dialog = PytestStatusDialog(plugin.iface.mainWindow())
     dialog.show()
 
     code = None
+    previous_environment = {}
 
     # open the log file and set the file object as std-target
     with python_log_file.open("w+") as file:
         try:
-            sys.stderr = file
-            sys.stdout = file
-            sys.stdin = file
+            previous_environment = apply_pytest_environment_variables(pytest_environment)
+
+            sys.stderr, sys.stdout, sys.stdin = file, file, file
 
             hook = PytestUIPlugin(dialog, pytest)
             code = pytest.main([f"--log-file={pytest_log_file.as_posix()}",
@@ -288,9 +372,9 @@ def run_pytest_from_ui(plugin):
             code = pytest.ExitCode.INTERNAL_ERROR
             plugin.iface.messageBar().pushWarning("pytest", "Fehler bei Testausführung. Weitere Ergebnisse im Log.")
         finally:
-            sys.stderr = stderr
-            sys.stdout = stdout
-            sys.stdin = stdin
+            restore_pytest_environment_variables(previous_environment)
+
+            sys.stderr, sys.stdout, sys.stdin = stderr, stdout, stdin
 
             if dialog.is_canceled() or code == pytest.ExitCode.INTERRUPTED:
                 dialog.finish("pytest wurde abgebrochen")
