@@ -2,32 +2,27 @@
 # SPDX-FileCopyrightText: 2025 Deutsche Telekom Technik GmbH <f.vonstudsinske@telekom.de>
 # SPDX-License-Identifier: GPL-3.0-only
 
-import os.path
-import os
-import shutil
 import configparser
-
+import os
+import os.path
+import shutil
 import time
-from datetime import datetime
 
+from datetime import datetime
 from pathlib import Path
 from pkg_resources import packaging
-
 from qgis.core import QgsApplication
 from qgis.gui import QgisInterface
-
-from qgis.PyQt.QtWidgets import QApplication, QAction
-from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import pyqtSignal
-
-from .test import run_pytest_from_ui
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import QAction, QApplication
 
 from .submodules.base import constants
-from .submodules.base.functions import qgis_unload_keyerror, get_files
-
+from .submodules.base.functions import get_files, qgis_unload_keyerror
 from .submodules.base.ui.base_class import ModuleBase
 from .submodules.base.ui.base_plugin import Plugin
 from .submodules.base.ui.confirmation_dialog import ConfirmationDialog
+from .test import run_pytest_from_ui
 
 
 TEMPLATE_VERSION = "1.2"
@@ -164,7 +159,11 @@ class PluginTemplate(Plugin):
         # update it
         self.set_option("PluginTemplateVersion", TEMPLATE_VERSION)
 
-    def load_version_info(self):
+    def load_version_info(self) -> None:
+        """ Load the repository version info and emit `versionRead`.
+
+            `repo_version` is "-1" without repository url and None on lookup errors.
+        """
 
         # set default values
         self.repo_version = "-1" if not self.repo_xml_path else None
